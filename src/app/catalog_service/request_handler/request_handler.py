@@ -1,11 +1,11 @@
 from threading import Lock
 
 from request_handler.catalog_handler_pb2 import LookupResponse, TradeResponse
-from request_handler.catalog_handler_pb2_grpc import RequestHandlerServicer
+from request_handler.catalog_handler_pb2_grpc import CatalogHandlerServicer
 from models.models import lookup, trade
 
 
-class RequestHandlerServicer(RequestHandlerServicer):
+class RequestHandlerServicer(CatalogHandlerServicer):
     """Provides methods that implement functionality of request handler server."""
 
     def __init__(self):

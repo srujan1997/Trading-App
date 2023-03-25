@@ -5,8 +5,8 @@ import grpc
 import request_handler.catalog_handler_pb2 as catalog__handler__pb2
 
 
-class RequestHandlerStub(object):
-    """The Request Handler service definition.
+class CatalogHandlerStub(object):
+    """The Catalog Request Handler service definition.
     """
 
     def __init__(self, channel):
@@ -16,19 +16,19 @@ class RequestHandlerStub(object):
             channel: A grpc.Channel.
         """
         self.Lookup = channel.unary_unary(
-                '/request_handler.RequestHandler/Lookup',
+                '/catalog_handler.CatalogHandler/Lookup',
                 request_serializer=catalog__handler__pb2.LookupRequest.SerializeToString,
                 response_deserializer=catalog__handler__pb2.LookupResponse.FromString,
                 )
         self.Trade = channel.unary_unary(
-                '/request_handler.RequestHandler/Trade',
+                '/catalog_handler.CatalogHandler/Trade',
                 request_serializer=catalog__handler__pb2.TradeRequest.SerializeToString,
                 response_deserializer=catalog__handler__pb2.TradeResponse.FromString,
                 )
 
 
-class RequestHandlerServicer(object):
-    """The Request Handler service definition.
+class CatalogHandlerServicer(object):
+    """The Catalog Request Handler service definition.
     """
 
     def Lookup(self, request, context):
@@ -46,7 +46,7 @@ class RequestHandlerServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_RequestHandlerServicer_to_server(servicer, server):
+def add_CatalogHandlerServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Lookup': grpc.unary_unary_rpc_method_handler(
                     servicer.Lookup,
@@ -60,13 +60,13 @@ def add_RequestHandlerServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'request_handler.RequestHandler', rpc_method_handlers)
+            'catalog_handler.CatalogHandler', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
  # This class is part of an EXPERIMENTAL API.
-class RequestHandler(object):
-    """The Request Handler service definition.
+class CatalogHandler(object):
+    """The Catalog Request Handler service definition.
     """
 
     @staticmethod
@@ -80,7 +80,7 @@ class RequestHandler(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/request_handler.RequestHandler/Lookup',
+        return grpc.experimental.unary_unary(request, target, '/catalog_handler.CatalogHandler/Lookup',
             catalog__handler__pb2.LookupRequest.SerializeToString,
             catalog__handler__pb2.LookupResponse.FromString,
             options, channel_credentials,
@@ -97,7 +97,7 @@ class RequestHandler(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/request_handler.RequestHandler/Trade',
+        return grpc.experimental.unary_unary(request, target, '/catalog_handler.CatalogHandler/Trade',
             catalog__handler__pb2.TradeRequest.SerializeToString,
             catalog__handler__pb2.TradeResponse.FromString,
             options, channel_credentials,

@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x15\x63\x61talog_handler.proto\x12\x0frequest_handler\"#\n\rLookupRequest\x12\x12\n\nstock_name\x18\x01 \x01(\t\"\xa0\x01\n\x0eLookupResponse\x12\x0f\n\x07success\x18\x01 \x01(\x05\x12H\n\rstock_details\x18\x02 \x03(\x0b\x32\x31.request_handler.LookupResponse.StockDetailsEntry\x1a\x33\n\x11StockDetailsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x02:\x02\x38\x01\"F\n\x0cTradeRequest\x12\x12\n\nstock_name\x18\x01 \x01(\t\x12\x14\n\x0ctrade_volume\x18\x02 \x01(\x02\x12\x0c\n\x04type\x18\x03 \x01(\t\" \n\rTradeResponse\x12\x0f\n\x07success\x18\x01 \x01(\x05\x32\xa7\x01\n\x0eRequestHandler\x12K\n\x06Lookup\x12\x1e.request_handler.LookupRequest\x1a\x1f.request_handler.LookupResponse\"\x00\x12H\n\x05Trade\x12\x1d.request_handler.TradeRequest\x1a\x1e.request_handler.TradeResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x15\x63\x61talog_handler.proto\x12\x0f\x63\x61talog_handler\"#\n\rLookupRequest\x12\x12\n\nstock_name\x18\x01 \x01(\t\"\xa0\x01\n\x0eLookupResponse\x12\x0f\n\x07success\x18\x01 \x01(\x05\x12H\n\rstock_details\x18\x02 \x03(\x0b\x32\x31.catalog_handler.LookupResponse.StockDetailsEntry\x1a\x33\n\x11StockDetailsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x02:\x02\x38\x01\"F\n\x0cTradeRequest\x12\x12\n\nstock_name\x18\x01 \x01(\t\x12\x14\n\x0ctrade_volume\x18\x02 \x01(\x02\x12\x0c\n\x04type\x18\x03 \x01(\t\" \n\rTradeResponse\x12\x0f\n\x07success\x18\x01 \x01(\x05\x32\xa7\x01\n\x0e\x43\x61talogHandler\x12K\n\x06Lookup\x12\x1e.catalog_handler.LookupRequest\x1a\x1f.catalog_handler.LookupResponse\"\x00\x12H\n\x05Trade\x12\x1d.catalog_handler.TradeRequest\x1a\x1e.catalog_handler.TradeResponse\"\x00\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'catalog_handler_pb2', globals())
@@ -32,6 +32,6 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _TRADEREQUEST._serialized_end=312
   _TRADERESPONSE._serialized_start=314
   _TRADERESPONSE._serialized_end=346
-  _REQUESTHANDLER._serialized_start=349
-  _REQUESTHANDLER._serialized_end=516
+  _CATALOGHANDLER._serialized_start=349
+  _CATALOGHANDLER._serialized_end=516
 # @@protoc_insertion_point(module_scope)
