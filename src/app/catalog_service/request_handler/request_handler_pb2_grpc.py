@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import request_handler_pb2 as request__handler__pb2
+import request_handler.request_handler_pb2 as request__handler__pb2
 
 
 class RequestHandlerStub(object):
