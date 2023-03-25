@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x13order_handler.proto\x12\x0frequest_handler\"A\n\x07Request\x12\x12\n\nstock_name\x18\x01 \x01(\t\x12\x14\n\x0ctrade_volume\x18\x02 \x01(\x02\x12\x0c\n\x04type\x18\x03 \x01(\t\"\x1b\n\x08Response\x12\x0f\n\x07message\x18\x01 \x01(\x02\x32P\n\x0eRequestHandler\x12>\n\x05Order\x12\x18.request_handler.Request\x1a\x19.request_handler.Response\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x13order_handler.proto\x12\x0frequest_handler\"A\n\x07Request\x12\x12\n\nstock_name\x18\x01 \x01(\t\x12\x14\n\x0ctrade_volume\x18\x02 \x01(\x02\x12\x0c\n\x04type\x18\x03 \x01(\t\"3\n\x08Response\x12\x0f\n\x07success\x18\x01 \x01(\x05\x12\x16\n\x0etransaction_id\x18\x02 \x01(\x05\x32P\n\x0eRequestHandler\x12>\n\x05Order\x12\x18.request_handler.Request\x1a\x19.request_handler.Response\"\x00\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'order_handler_pb2', globals())
@@ -23,7 +23,7 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _REQUEST._serialized_start=40
   _REQUEST._serialized_end=105
   _RESPONSE._serialized_start=107
-  _RESPONSE._serialized_end=134
-  _REQUESTHANDLER._serialized_start=136
-  _REQUESTHANDLER._serialized_end=216
+  _RESPONSE._serialized_end=158
+  _REQUESTHANDLER._serialized_start=160
+  _REQUESTHANDLER._serialized_end=240
 # @@protoc_insertion_point(module_scope)

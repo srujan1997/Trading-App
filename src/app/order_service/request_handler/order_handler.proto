@@ -19,5 +19,6 @@ message Request {
 
 // The response message containing the details requested.
 message Response {
-  float message = 1;
+  int32 success = 1;
+  int32 transaction_id = 2;
 }
