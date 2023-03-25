@@ -44,10 +44,10 @@ def process_order(stock_name, volume, trade_type):
         stub = catalog_handler_pb2_grpc.CatalogHandlerStub(channel)
         response = stub.Trade(catalog_handler_pb2.TradeRequest(stock_name=stock_name,
                                                                trade_volume=volume, type=trade_type))
-    if response == 1:
+    if response.success == 1:
         lock.acquire()
-        txn_id += 1
         log_transaction(txn_id, stock_name, trade_type, volume)
+        txn_id += 1
         lock.release()
         return response.success, txn_id
     else:
@@ -60,7 +60,7 @@ class OrderHandlerServicer(order_handler_pb2_grpc.OrderHandlerServicer):
     def __init__(self):
         pass
 
-    # Order definition for request handler of order server
+    # Order definition for request handler of order service
     def Order(self, request, context):
-        success, txn_id = process_order(request.stock_name, request.trade_volume, request.type)
-        return order_handler_pb2.Response(success=success, transaction_id=txn_id)
+        success, transaction_id = process_order(request.stock_name, request.trade_volume, request.type)
+        return order_handler_pb2.Response(success=success, transaction_id=transaction_id)

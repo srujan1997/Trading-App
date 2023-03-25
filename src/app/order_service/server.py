@@ -4,7 +4,8 @@ import grpc
 from request_handler.request_handler import OrderHandlerServicer, get_last_txn_id
 from request_handler.order_handler_pb2_grpc import add_OrderHandlerServicer_to_server
 
-#Main server method
+
+# Main server method
 def serve():
     get_last_txn_id()
     host_name = "localhost"
