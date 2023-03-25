@@ -42,8 +42,8 @@ def trade(stock_name, n, trade_type, lock) -> int:
     if n > stock_details["quantity"]:
         return -2
     if trade_type == "sell":
-        stock_details["trade_volume"] += n
+        stock_details["quantity"] += n
     else:
-        stock_details["trade_volume"] -= n
+        stock_details["quantity"] -= n
     lock.release()
     return 1
