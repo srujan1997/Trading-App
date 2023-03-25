@@ -13,19 +13,25 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x15\x63\x61talog_handler.proto\x12\x0frequest_handler\"#\n\rLookupRequest\x12\x12\n\nstock_name\x18\x01 \x01(\t\"F\n\x0cTradeRequest\x12\x12\n\nstock_name\x18\x01 \x01(\t\x12\x14\n\x0ctrade_volume\x18\x02 \x01(\x02\x12\x0c\n\x04type\x18\x03 \x01(\t\"\x1b\n\x08Response\x12\x0f\n\x07message\x18\x01 \x01(\x02\x32\x9c\x01\n\x0eRequestHandler\x12\x45\n\x06Lookup\x12\x1e.request_handler.LookupRequest\x1a\x19.request_handler.Response\"\x00\x12\x43\n\x05Trade\x12\x1d.request_handler.TradeRequest\x1a\x19.request_handler.Response\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x15\x63\x61talog_handler.proto\x12\x0frequest_handler\"#\n\rLookupRequest\x12\x12\n\nstock_name\x18\x01 \x01(\t\"\xa0\x01\n\x0eLookupResponse\x12\x0f\n\x07success\x18\x01 \x01(\x05\x12H\n\rstock_details\x18\x02 \x03(\x0b\x32\x31.request_handler.LookupResponse.StockDetailsEntry\x1a\x33\n\x11StockDetailsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x02:\x02\x38\x01\"F\n\x0cTradeRequest\x12\x12\n\nstock_name\x18\x01 \x01(\t\x12\x14\n\x0ctrade_volume\x18\x02 \x01(\x02\x12\x0c\n\x04type\x18\x03 \x01(\t\" \n\rTradeResponse\x12\x0f\n\x07success\x18\x01 \x01(\x05\x32\xa7\x01\n\x0eRequestHandler\x12K\n\x06Lookup\x12\x1e.request_handler.LookupRequest\x1a\x1f.request_handler.LookupResponse\"\x00\x12H\n\x05Trade\x12\x1d.request_handler.TradeRequest\x1a\x1e.request_handler.TradeResponse\"\x00\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'catalog_handler_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
+  _LOOKUPRESPONSE_STOCKDETAILSENTRY._options = None
+  _LOOKUPRESPONSE_STOCKDETAILSENTRY._serialized_options = b'8\001'
   _LOOKUPREQUEST._serialized_start=42
   _LOOKUPREQUEST._serialized_end=77
-  _TRADEREQUEST._serialized_start=79
-  _TRADEREQUEST._serialized_end=149
-  _RESPONSE._serialized_start=151
-  _RESPONSE._serialized_end=178
-  _REQUESTHANDLER._serialized_start=181
-  _REQUESTHANDLER._serialized_end=337
+  _LOOKUPRESPONSE._serialized_start=80
+  _LOOKUPRESPONSE._serialized_end=240
+  _LOOKUPRESPONSE_STOCKDETAILSENTRY._serialized_start=189
+  _LOOKUPRESPONSE_STOCKDETAILSENTRY._serialized_end=240
+  _TRADEREQUEST._serialized_start=242
+  _TRADEREQUEST._serialized_end=312
+  _TRADERESPONSE._serialized_start=314
+  _TRADERESPONSE._serialized_end=346
+  _REQUESTHANDLER._serialized_start=349
+  _REQUESTHANDLER._serialized_end=516
 # @@protoc_insertion_point(module_scope)

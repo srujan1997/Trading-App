@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import request_handler.catalog_handler_pb2 as catalog__handler__pb2
+import catalog_handler_pb2 as catalog__handler__pb2
 
 
 class RequestHandlerStub(object):
@@ -18,12 +18,12 @@ class RequestHandlerStub(object):
         self.Lookup = channel.unary_unary(
                 '/request_handler.RequestHandler/Lookup',
                 request_serializer=catalog__handler__pb2.LookupRequest.SerializeToString,
-                response_deserializer=catalog__handler__pb2.Response.FromString,
+                response_deserializer=catalog__handler__pb2.LookupResponse.FromString,
                 )
         self.Trade = channel.unary_unary(
                 '/request_handler.RequestHandler/Trade',
                 request_serializer=catalog__handler__pb2.TradeRequest.SerializeToString,
-                response_deserializer=catalog__handler__pb2.Response.FromString,
+                response_deserializer=catalog__handler__pb2.TradeResponse.FromString,
                 )
 
 
@@ -51,12 +51,12 @@ def add_RequestHandlerServicer_to_server(servicer, server):
             'Lookup': grpc.unary_unary_rpc_method_handler(
                     servicer.Lookup,
                     request_deserializer=catalog__handler__pb2.LookupRequest.FromString,
-                    response_serializer=catalog__handler__pb2.Response.SerializeToString,
+                    response_serializer=catalog__handler__pb2.LookupResponse.SerializeToString,
             ),
             'Trade': grpc.unary_unary_rpc_method_handler(
                     servicer.Trade,
                     request_deserializer=catalog__handler__pb2.TradeRequest.FromString,
-                    response_serializer=catalog__handler__pb2.Response.SerializeToString,
+                    response_serializer=catalog__handler__pb2.TradeResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -82,7 +82,7 @@ class RequestHandler(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/request_handler.RequestHandler/Lookup',
             catalog__handler__pb2.LookupRequest.SerializeToString,
-            catalog__handler__pb2.Response.FromString,
+            catalog__handler__pb2.LookupResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -99,6 +99,6 @@ class RequestHandler(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/request_handler.RequestHandler/Trade',
             catalog__handler__pb2.TradeRequest.SerializeToString,
-            catalog__handler__pb2.Response.FromString,
+            catalog__handler__pb2.TradeResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
