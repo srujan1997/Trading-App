@@ -8,7 +8,7 @@ class StockStatus(enum.Enum):
 
 
 # Defining a catalog of the stocks required
-catalog = None
+catalog = {}
 
 
 def load_catalog():
@@ -23,15 +23,15 @@ def initialise_stock_quantity(quantity_dict) -> None:
 
 
 # Defining the lookup method
-def lookup(stock_name) -> float:
+def lookup(stock_name):
     stock_details = catalog.get(stock_name, None)
     if not stock_details:
         return -1, {}
-    return stock_details if stock_details["status"] is StockStatus.active.value else 0, {}
+    return (1, stock_details) if stock_details["status"] is StockStatus.active.value else (0, {})
 
 
 # Defining the trade method
-def trade(stock_name, n, trade_type, lock) -> float:
+def trade(stock_name, n, trade_type, lock) -> int:
     if n <= 0:
         return 0
     stock_lookup, _ = lookup(stock_name)
