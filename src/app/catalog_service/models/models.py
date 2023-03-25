@@ -26,15 +26,15 @@ def initialise_stock_quantity(quantity_dict) -> None:
 def lookup(stock_name) -> float:
     stock_details = catalog.get(stock_name, None)
     if not stock_details:
-        return -1
-    return stock_details["price"] if stock_details["status"] is StockStatus.active.value else 0
+        return -1, {}
+    return stock_details if stock_details["status"] is StockStatus.active.value else 0, {}
 
 
 # Defining the trade method
 def trade(stock_name, n, trade_type, lock) -> float:
     if n <= 0:
         return 0
-    stock_lookup = lookup(stock_name)
+    stock_lookup, _ = lookup(stock_name)
     if stock_lookup == -1 or stock_lookup == 0:
         return stock_lookup
     lock.acquire()
