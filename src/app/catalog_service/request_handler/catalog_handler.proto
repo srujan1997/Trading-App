@@ -1,10 +1,10 @@
 // Proto: Service Definition for gRPC
 
 syntax = "proto3";
-package request_handler;
+package catalog_handler;
 
-// The Request Handler service definition.
-service RequestHandler {
+// The Catalog Request Handler service definition.
+service CatalogHandler {
 
   // Sends Price of the stock if the status is active.
   rpc Lookup (LookupRequest) returns (LookupResponse) {}
