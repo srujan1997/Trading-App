@@ -1,7 +1,7 @@
 from threading import Lock
 
-from request_handler.request_handler_pb2 import Response
-from request_handler.request_handler_pb2_grpc import RequestHandlerServicer
+from request_handler.catalog_handler_pb2 import Response
+from request_handler.catalog_handler_pb2_grpc import RequestHandlerServicer
 from models.models import lookup, trade
 
 
