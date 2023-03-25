@@ -13,7 +13,7 @@ catalog = None
 
 def load_catalog():
     global catalog
-    catalog = json.load(open('./catalog.json', 'r'))
+    catalog = json.load(open('./models/catalog.json', 'r'))
 
 
 def initialise_stock_quantity(quantity_dict) -> None:
