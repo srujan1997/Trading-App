@@ -1,10 +1,10 @@
 // Proto: Service Definition for gRPC
 
 syntax = "proto3";
-package request_handler;
+package order_handler;
 
 // The Request Handler service definition.
-service RequestHandler {
+service OrderHandler {
 
   // Executes a Trade for the client and communicates the success of it.
   rpc Order (Request) returns (Response) {}
