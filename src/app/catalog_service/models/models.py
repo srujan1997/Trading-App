@@ -43,7 +43,7 @@ def trade(stock_name, n, trade_type, lock) -> int:
         return -2
     if trade_type == "sell":
         stock_details["quantity"] += n
-    else:
+    elif trade_type == "buy":
         stock_details["quantity"] -= n
     lock.release()
     return 1

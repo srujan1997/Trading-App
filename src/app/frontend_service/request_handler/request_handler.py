@@ -2,16 +2,28 @@ from http.server import BaseHTTPRequestHandler
 import json
 import grpc
 import csv
+from threading import Lock
+import threading
 
-from request_handler import order_handler_pb2
-from request_handler import order_handler_pb2_grpc
 from request_handler import catalog_handler_pb2
 from request_handler import catalog_handler_pb2_grpc
 
+txn_id = 0
+lock = Lock()
+
 class FrontEndHandler(BaseHTTPRequestHandler):
 
+    def handle(self):
+        while True:
+            # Handle the incoming request
+            self.handle_one_request()
+            
+            # Check if the client has closed the connection
+            if self.close_connection:
+                break
+
     # Helper function to process the order
-    def process_order(stock_name, volume, trade_type):
+    def process_order(self,stock_name, volume, trade_type):
         global txn_id, lock
         hostname = 'localhost'
         port = '5297'
@@ -32,7 +44,7 @@ class FrontEndHandler(BaseHTTPRequestHandler):
             return response.success, -1
     
     #Helper function to run lookup
-    def run_lookup(stock_name):
+    def run_lookup(self, stock_name):
         hostname = 'localhost'
         port = '5297'
         with grpc.insecure_channel(hostname+':'+port) as channel:
@@ -43,8 +55,11 @@ class FrontEndHandler(BaseHTTPRequestHandler):
         else:
             return {}
 
-    
+    #overrriding the GET method
     def do_GET(self):
+        current_thread = threading.current_thread()
+        thread_id = current_thread.ident
+        print("Handling request on thread ID: {}".format(thread_id))
         stock_name = self.path.split('/')[-1]
         stock = self.run_lookup(stock_name)
         if stock:
@@ -59,7 +74,9 @@ class FrontEndHandler(BaseHTTPRequestHandler):
                 }
             }
         else:
-            self.send_error(404, 'Stock not found')
+            self.send_response(404)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
             response = {
                 "error": {
                     "code": 404,
@@ -68,12 +85,29 @@ class FrontEndHandler(BaseHTTPRequestHandler):
             }
         self.wfile.write(json.dumps(response).encode())
 
+    #overrriding the POST method
     def do_POST(self):
+        current_thread = threading.current_thread()
+        thread_id = current_thread.ident
+        print("Handling request on thread ID: {}".format(thread_id))
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
         order = json.loads(post_data)
-        success,txn_id = self.process_order(order['name'], order['quantity'], order['type'])
-        if txn_id:
+        if order['type']=="sell" or order['type'] =="buy":
+            success,txn_id = self.process_order(order['name'], order['quantity'], order['type'])
+        else:
+            txn_id = -1
+        if txn_id==-1:
+            self.send_response(400)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            response = {
+                "error": {
+                    "code": 400,
+                    "message": "Invalid order request"
+                }
+            }
+        elif txn_id:
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.end_headers()
@@ -82,12 +116,5 @@ class FrontEndHandler(BaseHTTPRequestHandler):
                     "transaction_number": txn_id
                 }
             }
-        else:
-            self.send_error(400, 'Invalid order request')
-            response = {
-                "error": {
-                    "code": 400,
-                    "message": "Invalid order request"
-                }
-            }
+
         self.wfile.write(json.dumps(response).encode())

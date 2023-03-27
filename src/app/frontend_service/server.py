@@ -1,15 +1,14 @@
 from concurrent import futures
+from logging import Logger
 import grpc
-
-# Main server method
-def serve():
-    host_name = "localhost"
-    port = '8081'
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=5))
-    server.add_insecure_port(host_name + ':' + port)
-    server.start()
-    server.wait_for_termination()
+from http.server import ThreadingHTTPServer
+from request_handler import request_handler
 
 
-if __name__ == '__main__':
-    serve()
+class updatedHTTPServer(ThreadingHTTPServer):
+    protocol_version = 'HTTP/1.1'
+    max_threads = 5
+
+httpd = updatedHTTPServer(('localhost', 8081), request_handler.FrontEndHandler)
+print(f'Serving on port 8081...')
+httpd.serve_forever()
