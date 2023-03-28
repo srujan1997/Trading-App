@@ -38,7 +38,7 @@ def get_last_txn_id():
 # Helper function to process the order
 def process_order(stock_name, volume, trade_type):
     global txn_id, lock
-    hostname = 'localhost'
+    hostname = "172.17.0.2"
     port = '5297'
     with grpc.insecure_channel(hostname+':'+port) as channel:
         stub = catalog_handler_pb2_grpc.CatalogHandlerStub(channel)
