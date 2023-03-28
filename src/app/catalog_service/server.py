@@ -7,9 +7,8 @@ from request_handler.catalog_handler_pb2_grpc import add_CatalogHandlerServicer_
 
 
 # Main server method
-def serve():
+def serve(host_name):
     load_catalog()
-    host_name = "localhost"
     port = '5297'
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=5))
     add_CatalogHandlerServicer_to_server(CatalogHandlerServicer(), server)
@@ -19,4 +18,5 @@ def serve():
 
 
 if __name__ == '__main__':
-    serve()
+    host_name = input("Enter host name: ")
+    serve(host_name)

@@ -2,33 +2,37 @@ import requests
 import random
 import time
 
-def run_client(percentage):
-    session = requests.Session()
-    for i in range(5):
-        # Lookup a random stock
+def run_client(p,num_req,hostname):
+    s = requests.Session()
+    for i in range(num_req):
+        # Run a random for lookup of stocks
         stock_name = random.choice(["GameStart", "FishCo", "BoarCo","MenhirCo"])
-        response = session.get(f'http://localhost:8081/stocks/{stock_name}')
+        response = s.get(f'http://{hostname}:8081/stocks/{stock_name}')
         if response.status_code == 404:
             print(f"Error: {response.json()['error']['message']}")
         else:
             data = response.json()['data']
-            print(f"Stock: {data['name']} - Price: {data['price']} - Quantity: {data['quantity']}")
+            print(f"Lookup for Stock {data['name']}  Price: {data['price']}  Quantity: {data['quantity']}")
             # Place a trade request with a certain probability
-            if data['quantity'] > 0 and random.random() < percentage:
-                quantity = random.randint(1, min(10, data['quantity']))
-                response = session.post('http://localhost:8081/orders', json={
+            if data['quantity'] > 0 and p > random.random():
+                quantity = 10
+                trade_type=random.choice(["sell","buy"])
+                response = s.post(f'http://{hostname}:8081/orders', json={
                     'name': stock_name,
                     'quantity': quantity,
-                    'type': 'sell'
+                    'type': trade_type
                 })
                 if response.status_code == 404:
                     print(f"Error: {response.json()['error']['message']}")
                 else:
-                    data = response.json()['data']
-                    print(f"Order placed successfully. Transaction number: {data['transaction_number']}")
-        time.sleep(3)
+                    order_data = response.json()['data']
+                    print(f"Order Request for Stock {data['name']} Transaction number: {order_data['transaction_number']}")
+        time.sleep(5)
 
 if __name__ == '__main__':
-    run_client(0.6)
+    hostname = input("Enter hostname: ")
+    num_req = int(input("Enter number of requests: "))
+    prob = float(input("Set the probability for running trade requests: "))
+    run_client(prob,num_req,hostname)
 
 

@@ -7,29 +7,22 @@ import threading
 
 from request_handler import catalog_handler_pb2
 from request_handler import catalog_handler_pb2_grpc
+from request_handler import order_handler_pb2
+from request_handler import order_handler_pb2_grpc
 
 txn_id = 0
 lock = Lock()
 
 class FrontEndHandler(BaseHTTPRequestHandler):
 
-    def handle(self):
-        while True:
-            # Handle the incoming request
-            self.handle_one_request()
-            
-            # Check if the client has closed the connection
-            if self.close_connection:
-                break
-
     # Helper function to process the order
-    def process_order(self,stock_name, volume, trade_type):
+    def run_order(self,stock_name, volume, trade_type):
         global txn_id, lock
         hostname = 'localhost'
-        port = '5297'
+        port = '5298'
         with grpc.insecure_channel(hostname+':'+port) as channel:
-            stub = catalog_handler_pb2_grpc.CatalogHandlerStub(channel)
-            response = stub.Trade(catalog_handler_pb2.TradeRequest(stock_name=stock_name,trade_volume=volume, type=trade_type))
+            stub = order_handler_pb2_grpc.OrderHandlerStub(channel)
+            response = stub.Order(order_handler_pb2.Request(stock_name=stock_name,trade_volume=volume, type=trade_type))
         if response.success == 1:
             lock.acquire()
             log_file = open("transaction_log.csv", "a", encoding='UTF8', newline='')
@@ -57,9 +50,10 @@ class FrontEndHandler(BaseHTTPRequestHandler):
 
     #overrriding the GET method
     def do_GET(self):
-        current_thread = threading.current_thread()
-        thread_id = current_thread.ident
-        print("Handling request on thread ID: {}".format(thread_id))
+        # current_thread = threading.current_thread()
+        # thread_name = current_thread.name
+        # thread_id = current_thread.ident
+        # print("Handling request on {} with thread ID: {}".format(thread_name,thread_id))
         stock_name = self.path.split('/')[-1]
         stock = self.run_lookup(stock_name)
         if stock:
@@ -87,14 +81,15 @@ class FrontEndHandler(BaseHTTPRequestHandler):
 
     #overrriding the POST method
     def do_POST(self):
-        current_thread = threading.current_thread()
-        thread_id = current_thread.ident
-        print("Handling request on thread ID: {}".format(thread_id))
+        # current_thread = threading.current_thread()
+        # thread_name = current_thread.name
+        # thread_id = current_thread.ident
+        # print("Handling request on {} with thread ID: {}".format(thread_name,thread_id))
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
         order = json.loads(post_data)
         if order['type']=="sell" or order['type'] =="buy":
-            success,txn_id = self.process_order(order['name'], order['quantity'], order['type'])
+            success,txn_id = self.run_order(order['name'], order['quantity'], order['type'])
         else:
             txn_id = -1
         if txn_id==-1:
