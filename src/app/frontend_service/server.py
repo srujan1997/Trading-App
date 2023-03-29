@@ -1,5 +1,6 @@
 from http.server import ThreadingHTTPServer
 from request_handler import request_handler
+import os
 
 
 class updatedHTTPServer(ThreadingHTTPServer):
@@ -7,7 +8,8 @@ class updatedHTTPServer(ThreadingHTTPServer):
     max_threads = 2
 
 #host = input("Enter hostname: ")
-host_name = '0.0.0.0'
-httpd = updatedHTTPServer((host_name, 8081), request_handler.FrontEndHandler)
+host_name = os.environ.get("HOST_IP", "localhost")
+port = 8081
+httpd = updatedHTTPServer((host_name, port), request_handler.FrontEndHandler)
 print(f'Serving on port 8081...')
 httpd.serve_forever()

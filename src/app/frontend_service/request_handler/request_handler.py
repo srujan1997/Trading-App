@@ -1,9 +1,7 @@
 from http.server import BaseHTTPRequestHandler
 import json
 import grpc
-import csv
-from threading import Lock
-import threading
+import os
 import socket
 
 from request_handler import catalog_handler_pb2
@@ -11,32 +9,20 @@ from request_handler import catalog_handler_pb2_grpc
 from request_handler import order_handler_pb2
 from request_handler import order_handler_pb2_grpc
 
-txn_id = 0
-lock = Lock()
 
 class FrontEndHandler(BaseHTTPRequestHandler):
 
     # Helper function to process the order
     def run_order(self,stock_name, volume, trade_type):
-        global txn_id, lock
-        hostname = socket.gethostbyname("order_service")
-        port = '5298'
-        with grpc.insecure_channel(hostname+':'+port) as channel:
+        host_ip = os.environ.get("HOST_IP", "localhost")
+        hostname = os.environ.get("ORDER_SERVICE", host_ip)
+        ip = socket.gethostbyname(hostname)
+        port = '6297'
+        with grpc.insecure_channel(ip+':'+port) as channel:
             stub = order_handler_pb2_grpc.OrderHandlerStub(channel)
             response = stub.Order(order_handler_pb2.Request(stock_name=stock_name,trade_volume=volume, type=trade_type))
-        if response.success == 1:
-            lock.acquire()
-            log_file = open("transaction_log.csv", "a", encoding='UTF8', newline='')
-            data = [txn_id, stock_name, trade_type, volume]
-            writer = csv.writer(log_file)
-            writer.writerow(data)
-            log_file.close()
-            txn_id += 1
-            lock.release()
-            return response.success, txn_id
-        else:
-            return response.success, -1
-    
+        return response.success, response.transaction_id
+
     #Helper function to run lookup
     def run_lookup(self, stock_name):
         hostname = socket.gethostbyname("catalog_service")
@@ -44,10 +30,8 @@ class FrontEndHandler(BaseHTTPRequestHandler):
         with grpc.insecure_channel(hostname+':'+port) as channel:
             stub = catalog_handler_pb2_grpc.CatalogHandlerStub(channel)
             response = stub.Lookup(catalog_handler_pb2.LookupRequest(stock_name=stock_name))
-        if response.success == 1:
-            return response.stock_details
-        else:
-            return {}
+
+        return response.stock_details
 
     #overrriding the GET method
     def do_GET(self):

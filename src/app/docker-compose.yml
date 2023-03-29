@@ -28,16 +28,14 @@ services:
     networks:
       - lab
 
-#  frontend_service:
-#    environment: *environment
-#    container_name: frontend_service
-#    build: ./frontend_service
-#    ports:
-#      - 8081:8081
-##    volumes:
-##      - ./order_service/transaction_log.csv:catalog_service/models/transaction_log.csv
-#    networks:
-#      - lab
+  frontend_service:
+    environment: *environment
+    container_name: frontend_service
+    build: ./frontend_service
+    ports:
+      - 8081:8081
+    networks:
+      - lab
 
 networks:
   lab:
