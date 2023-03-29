@@ -5,7 +5,7 @@
 .idea/
 
 # Transaction log file
-src/app/order_service/transaction_log.csv
+#src/app/order_service/transaction_log.csv
 
 #Service test files
 src/app/catalog_service/client_test.py
