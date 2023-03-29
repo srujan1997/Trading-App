@@ -10,7 +10,7 @@ from request_handler.catalog_handler_pb2_grpc import add_CatalogHandlerServicer_
 def serve(host_name):
     load_catalog()
     port = '5297'
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=5))
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=2))
     add_CatalogHandlerServicer_to_server(CatalogHandlerServicer(), server)
     server.add_insecure_port(host_name + ':' + port)
     server.start()

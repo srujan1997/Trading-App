@@ -4,7 +4,7 @@ from request_handler import request_handler
 
 class updatedHTTPServer(ThreadingHTTPServer):
     protocol_version = 'HTTP/1.1'
-    max_threads = 5
+    max_threads = 2
 
 host = input("Enter hostname: ")
 httpd = updatedHTTPServer((host, 8081), request_handler.FrontEndHandler)

@@ -9,7 +9,7 @@ from request_handler.order_handler_pb2_grpc import add_OrderHandlerServicer_to_s
 def serve(host):
     get_last_txn_id()
     port = '5298'
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=5))
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=2))
     add_OrderHandlerServicer_to_server(OrderHandlerServicer(), server)
     server.add_insecure_port(host + ':' + port)
     server.start()
