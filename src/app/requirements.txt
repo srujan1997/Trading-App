@@ -1,0 +1,5 @@
+protobuf
+grpcio
+futures
+requests
+socket

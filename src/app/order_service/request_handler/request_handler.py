@@ -32,7 +32,7 @@ def get_last_txn_id():
     else:
         log_file = open("transaction_log.csv", "r")
         data = log_file.readlines()
-        txn_id = 0 if len(data)==1 else data[-1][0]
+        txn_id = 0 if len(data)==1 else int(data[-1][0])
     log_file.close()
 
 
