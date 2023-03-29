@@ -12,7 +12,7 @@ def serve():
     load_catalog()
     host_name = os.environ.get("HOST_IP", "localhost")
     port = '5297'
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=5))
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=2))
     add_CatalogHandlerServicer_to_server(CatalogHandlerServicer(), server)
     server.add_insecure_port(host_name + ':' + port)
     server.start()
@@ -20,4 +20,5 @@ def serve():
 
 
 if __name__ == '__main__':
+    #host_name = input("Enter host name: ")
     serve()
