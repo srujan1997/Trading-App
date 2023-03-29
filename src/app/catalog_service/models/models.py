@@ -49,7 +49,7 @@ def trade(stock_name, n, trade_type, lock) -> int:
         stock_details["quantity"] += n
     elif trade_type == "buy":
         stock_details["quantity"] -= n
-    output = open('output.json', 'w')
+    output = open('../catalog_service/output.json', 'w')
     json.dump(catalog, output)
     output.close()
     lock.release()
