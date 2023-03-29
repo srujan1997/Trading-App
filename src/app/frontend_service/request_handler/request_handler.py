@@ -4,6 +4,7 @@ import grpc
 import csv
 from threading import Lock
 import threading
+import socket
 
 from request_handler import catalog_handler_pb2
 from request_handler import catalog_handler_pb2_grpc
@@ -18,7 +19,7 @@ class FrontEndHandler(BaseHTTPRequestHandler):
     # Helper function to process the order
     def run_order(self,stock_name, volume, trade_type):
         global txn_id, lock
-        hostname = 'localhost'
+        hostname = socket.gethostbyname("order_service")
         port = '5298'
         with grpc.insecure_channel(hostname+':'+port) as channel:
             stub = order_handler_pb2_grpc.OrderHandlerStub(channel)
@@ -38,7 +39,7 @@ class FrontEndHandler(BaseHTTPRequestHandler):
     
     #Helper function to run lookup
     def run_lookup(self, stock_name):
-        hostname = 'localhost'
+        hostname = socket.gethostbyname("catalog_service")
         port = '5297'
         with grpc.insecure_channel(hostname+':'+port) as channel:
             stub = catalog_handler_pb2_grpc.CatalogHandlerStub(channel)
