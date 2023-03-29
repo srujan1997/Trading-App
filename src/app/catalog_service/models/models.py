@@ -1,5 +1,6 @@
 import enum
 import json
+import os
 
 
 class StockStatus(enum.Enum):
@@ -13,7 +14,10 @@ catalog = {}
 
 def load_catalog():
     global catalog
-    catalog = json.load(open('./models/catalog_init.json', 'r'))
+    if os.path.getsize('./output.json') > 0:
+        catalog = json.load(open('./output.json', 'r'))
+    else:
+        catalog = json.load(open('./models/catalog_init.json', 'r'))
 
 
 def initialise_stock_quantity(quantity_dict) -> None:
@@ -45,7 +49,7 @@ def trade(stock_name, n, trade_type, lock) -> int:
         stock_details["quantity"] += n
     elif trade_type == "buy":
         stock_details["quantity"] -= n
-    output = open('../output.json', 'w')
+    output = open('output.json', 'w')
     json.dump(catalog, output)
     output.close()
     lock.release()
