@@ -44,4 +44,4 @@ def performance(p,num_req,hostname):
 
 if __name__ == '__main__':
     #hostname = input("Enter hostname: ")
-    performance(1,8,"elnux2.cs.umass.edu")
+    performance(1,8,"elnux2.cs.umass.edu") #Change hostname accordingly here.

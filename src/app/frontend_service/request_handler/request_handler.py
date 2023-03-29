@@ -50,10 +50,6 @@ class FrontEndHandler(BaseHTTPRequestHandler):
 
     #overrriding the GET method
     def do_GET(self):
-        # current_thread = threading.current_thread()
-        # thread_name = current_thread.name
-        # thread_id = current_thread.ident
-        # print("Handling request on {} with thread ID: {}".format(thread_name,thread_id))
         stock_name = self.path.split('/')[-1]
         stock = self.run_lookup(stock_name)
         if stock:
@@ -81,10 +77,6 @@ class FrontEndHandler(BaseHTTPRequestHandler):
 
     #overrriding the POST method
     def do_POST(self):
-        # current_thread = threading.current_thread()
-        # thread_name = current_thread.name
-        # thread_id = current_thread.ident
-        # print("Handling request on {} with thread ID: {}".format(thread_name,thread_id))
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
         order = json.loads(post_data)
