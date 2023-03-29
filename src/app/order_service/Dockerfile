@@ -39,6 +39,4 @@ WORKDIR /order_service
 # Finally copying application code
 COPY . /order_service/
 
-#EXPOSE 6297
-
 ENTRYPOINT ["python3", "server.py"]

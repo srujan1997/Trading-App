@@ -2,6 +2,7 @@ import grpc
 import csv
 import os
 from threading import Lock
+import socket
 
 from request_handler import order_handler_pb2
 from request_handler import order_handler_pb2_grpc
@@ -38,9 +39,11 @@ def get_last_txn_id():
 # Helper function to process the order
 def process_order(stock_name, volume, trade_type):
     global txn_id, lock
-    hostname = "172.17.0.2"
+    host_ip = os.environ.get("HOST_IP", "localhost")
+    hostname = os.environ.get("CATALOG_SERVICE", host_ip)
+    ip = socket.gethostbyname(hostname)
     port = '5297'
-    with grpc.insecure_channel(hostname+':'+port) as channel:
+    with grpc.insecure_channel(ip+':'+port) as channel:
         stub = catalog_handler_pb2_grpc.CatalogHandlerStub(channel)
         response = stub.Trade(catalog_handler_pb2.TradeRequest(stock_name=stock_name,
                                                                trade_volume=volume, type=trade_type))

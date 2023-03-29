@@ -1,0 +1,44 @@
+version: "3.8"
+
+x-environment: &environment
+  - HOST_IP=0.0.0.0
+  - CATALOG_SERVICE=catalog_service
+  - ORDER_SERVICE=order_service
+
+services:
+  catalog_service:
+    environment: *environment
+    container_name: catalog_service
+    build: ./catalog_service/
+    ports:
+      - 5297:5297
+#    volumes:
+#      - .:catalog_service/output.json
+    networks:
+      - lab
+
+  order_service:
+    environment: *environment
+    container_name: order_service
+    build: ./order_service
+    ports:
+      - 6297:6297
+#    volumes:
+#      - ./order_service/transaction_log.csv:catalog_service/models/transaction_log.csv
+    networks:
+      - lab
+
+#  frontend_service:
+#    environment: *environment
+#    container_name: frontend_service
+#    build: ./frontend_service
+#    ports:
+#      - 8081:8081
+##    volumes:
+##      - ./order_service/transaction_log.csv:catalog_service/models/transaction_log.csv
+#    networks:
+#      - lab
+
+networks:
+  lab:
+    external: true
