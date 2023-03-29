@@ -25,9 +25,11 @@ class FrontEndHandler(BaseHTTPRequestHandler):
 
     #Helper function to run lookup
     def run_lookup(self, stock_name):
-        hostname = socket.gethostbyname("catalog_service")
+        host_ip = os.environ.get("HOST_IP", "localhost")
+        hostname = os.environ.get("CATALOG_SERVICE", host_ip)
+        ip = socket.gethostbyname(hostname)
         port = '5297'
-        with grpc.insecure_channel(hostname+':'+port) as channel:
+        with grpc.insecure_channel(ip+':'+port) as channel:
             stub = catalog_handler_pb2_grpc.CatalogHandlerStub(channel)
             response = stub.Lookup(catalog_handler_pb2.LookupRequest(stock_name=stock_name))
 
