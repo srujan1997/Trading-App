@@ -32,7 +32,6 @@ class FrontEndHandler(BaseHTTPRequestHandler):
         with grpc.insecure_channel(ip+':'+port) as channel:
             stub = catalog_handler_pb2_grpc.CatalogHandlerStub(channel)
             response = stub.Lookup(catalog_handler_pb2.LookupRequest(stock_name=stock_name))
-
         return response.stock_details
 
     #overrriding the GET method
@@ -64,8 +63,7 @@ class FrontEndHandler(BaseHTTPRequestHandler):
 
     #overrriding the POST method
     def do_POST(self):
-        content_length = int(self.headers['Content-Length'])
-        post_data = self.rfile.read(content_length)
+        post_data = self.rfile.read(int(self.headers['Content-Length']))
         order = json.loads(post_data)
         if order['type']=="sell" or order['type'] =="buy":
             success,txn_id = self.run_order(order['name'], order['quantity'], order['type'])
@@ -90,5 +88,4 @@ class FrontEndHandler(BaseHTTPRequestHandler):
                     "transaction_number": txn_id
                 }
             }
-
         self.wfile.write(json.dumps(response).encode())
