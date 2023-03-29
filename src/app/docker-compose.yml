@@ -7,33 +7,40 @@ x-environment: &environment
 
 services:
   catalog_service:
-    environment: *environment
+    image: catalog
     container_name: catalog_service
+    environment: *environment
     build: ./catalog_service/
     ports:
       - 5297:5297
-#    volumes:
-#      - .:catalog_service/output.json
+    volumes:
+      - ./catalog_service/output.json:/catalog_service/output.json
     networks:
       - lab
 
   order_service:
-    environment: *environment
+    image: order
     container_name: order_service
+    environment: *environment
     build: ./order_service
     ports:
       - 6297:6297
-#    volumes:
-#      - ./order_service/transaction_log.csv:catalog_service/models/transaction_log.csv
+    volumes:
+      - ./order_service/transaction_log.csv:/order_service/transaction_log.csv
+    depends_on:
+      - catalog_service
     networks:
       - lab
 
   frontend_service:
-    environment: *environment
+    image: frontend
     container_name: frontend_service
+    environment: *environment
     build: ./frontend_service
     ports:
       - 8081:8081
+    depends_on:
+      - order_service
     networks:
       - lab
 
