@@ -1,0 +1,24 @@
+// Proto: Service Definition for gRPC
+
+syntax = "proto3";
+package order_handler;
+
+// The Request Handler service definition.
+service OrderHandler {
+
+  // Executes a Trade for the client and communicates the success of it.
+  rpc Order (Request) returns (Response) {}
+}
+
+// The request message containing the stock's name, volume and buy or sell.
+message Request {
+  string stock_name = 1;
+  float trade_volume = 2;
+  string type = 3;
+}
+
+// The response message containing the details requested.
+message Response {
+  int32 success = 1;
+  int32 transaction_id = 2;
+}

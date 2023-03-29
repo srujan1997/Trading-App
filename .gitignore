@@ -1,0 +1,15 @@
+# Mac OS X
+.DS_Store
+
+# JetBrains IDE
+.idea/
+
+# Transaction log file
+src/app/order_service/transaction_log.csv
+
+#Service test files
+src/app/catalog_service/client_test.py
+src/app/order_service/client_test.py
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
