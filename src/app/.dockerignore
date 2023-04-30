@@ -1,0 +1,5 @@
+catalog_service/request_handler/catalog_handler.proto
+catalog_service/client_test.py
+
+order_service/request_handler/order_handler.proto
+order_service/client_test.py

@@ -1,0 +1,27 @@
+{
+  "GameStart": {
+                  "price":10,
+                  "quantity":100,
+                  "status":0
+  },
+  "FishCo": {
+                  "price":13.45,
+                  "quantity":100,
+                  "status":0
+  },
+  "BoarCo": {
+                  "price":5.5,
+                  "quantity":100,
+                  "status":0
+  },
+  "MenhirCo": {
+                  "price":7.7,
+                  "quantity":100,
+                  "status":0
+  },
+  "Meta": {
+                  "price":150.22,
+                  "quantity":100,
+                  "status":1
+  }
+}
