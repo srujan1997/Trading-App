@@ -31,37 +31,3 @@ def order(stock_name, volume, trade_type):
 
 def get_order_details():
     pass
-
-
-
-
-
-
-
-
-    # #overrriding the GET method
-    # def do_GET(self):
-    #     stock_name = self.path.split('/')[-1]
-    #     stock = self.run_lookup(stock_name)
-    #     if stock:
-    #         self.send_response(200)
-    #         self.send_header('Content-type', 'application/json')
-    #         self.end_headers()
-    #         response = {
-    #             "data": {
-    #                 "name": stock_name,
-    #                 "price": stock['price'],
-    #                 "quantity": stock['quantity']
-    #             }
-    #         }
-    #     else:
-    #         self.send_response(404)
-    #         self.send_header('Content-type', 'application/json')
-    #         self.end_headers()
-    #         response = {
-    #             "error": {
-    #                 "code": 404,
-    #                 "message": "Stock not found"
-    #             }
-    #         }
-    #     self.wfile.write(json.dumps(response).encode())
