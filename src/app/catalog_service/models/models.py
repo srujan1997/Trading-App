@@ -31,7 +31,7 @@ def lookup(stock_name):
     stock_details = catalog.get(stock_name, None)
     if not stock_details:
         return -1, {}
-    return (1, stock_details) if stock_details["status"] is StockStatus.active.value else (0, {})
+    return (1, stock_details) if stock_details["status"] is StockStatus.active.value else (0, stock_details)
 
 
 # Defining the trade method
