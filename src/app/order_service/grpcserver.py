@@ -1,9 +1,12 @@
 from concurrent import futures
+from app_factory import create_app
 import grpc
 import os
 
 from request_handler.request_handler import OrderHandlerServicer, get_last_txn_id
 from request_handler.order_handler_pb2_grpc import add_OrderHandlerServicer_to_server
+
+app = create_app(app_name="frontend_service")
 
 
 # Main server method
@@ -21,3 +24,5 @@ def serve():
 if __name__ == '__main__':
     #host = input("Enter hostname: ")
     serve()
+    app.run(host='127.0.0.1', port=app.config['APP_PORT'])
+

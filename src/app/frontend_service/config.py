@@ -1,10 +1,9 @@
 import os
-# import json
 
 SERVICE_NAME = "frontend_service"
 
-DEBUG = False
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "development")
+DEBUG = False if ENVIRONMENT == "production" else True
 
 APP_PORT = 8081
 

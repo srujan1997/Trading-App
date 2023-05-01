@@ -1,11 +1,9 @@
 import os
 from flask import Flask
-# from flask_cors import CORS
 import redis
 
 from ping import ping
 from trade import trade
-
 
 PKG_NAME = os.path.dirname(os.path.realpath(__file__)).split("/")[-1]
 
@@ -27,11 +25,9 @@ def create_app(app_name=PKG_NAME):
         socket_connect_timeout=2,
     )
 
-    # if app_config == "config":
-    #     CORS(app)
     app.url_map.strict_slashes = False
 
-    BASE_URL_PREFIX = "/api/frontend_service"
+    BASE_URL_PREFIX = f"/api/frontend_service"
 
     with app.app_context():
         app.register_blueprint(ping, url_prefix=f"{BASE_URL_PREFIX}/ping")
