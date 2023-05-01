@@ -6,7 +6,7 @@ SERVICE_ID = os.environ.get("ID", "default")
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "development")
 DEBUG = False if ENVIRONMENT == "production" else True
 
-APP_PORT = 6298
+APP_PORT = os.environ.get("HTTP_PORT", 6298)
 
 REDIS = {
     "HOST": os.environ.get("CACHE_URL", ""),
