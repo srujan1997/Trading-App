@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import request_handler.order_handler_pb2 as order__handler__pb2
+import trade.order_handler_pb2 as order__handler__pb2
 
 
 class OrderHandlerStub(object):

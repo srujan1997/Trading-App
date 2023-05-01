@@ -4,8 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+flask = "==2.0.1"
 grpcio ="==1.51.1"
 grpcio-tools ="==1.51.1"
+requests = "==2.27.1"
+redis = "==3.5.3"
 
 [dev-packages]
 

@@ -1,15 +1,12 @@
-from http.server import ThreadingHTTPServer
-from request_handler import request_handler
-import os
+#!/usr/bin/env python3
 
-#Extending ThreadingHTTPServer class
-class updatedHTTPServer(ThreadingHTTPServer):
-    protocol_version = 'HTTP/1.1'
-    max_threads = 2
+"""
+This module creates a flask instance and ties it up with blueprints
+"""
 
-#host = input("Enter hostname: ")
-host_name = os.environ.get("HOST_IP", "localhost")
-port = 8081
-httpd = updatedHTTPServer((host_name, port), request_handler.FrontEndHandler) # Running server using updatedHTTPServer and FrontEndHandler from request_handler 
-print(f'Serving on port 8081...')
-httpd.serve_forever()
+from app_factory import create_app
+
+app = create_app(app_name="frontend_service")
+
+if __name__ == "__main__":
+    app.run(host='127.0.0.1', port=app.config['APP_PORT'])
