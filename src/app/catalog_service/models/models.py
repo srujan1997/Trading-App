@@ -2,6 +2,8 @@ import enum
 import json
 import os
 
+from cache import delete_from_redis
+
 
 class StockStatus(enum.Enum):
     active = 0
@@ -52,5 +54,6 @@ def trade(stock_name, n, trade_type, lock) -> int:
     output = open('../catalog_service/output.json', 'w')
     json.dump(catalog, output)
     output.close()
+    delete_from_redis(stock_name)
     lock.release()
     return 1

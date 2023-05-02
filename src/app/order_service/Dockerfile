@@ -39,4 +39,4 @@ WORKDIR /order_service
 # Finally copying application code
 COPY . /order_service/
 
-ENTRYPOINT ["python3", "grpcserver.py", "httpserver.py"]
+ENTRYPOINT ["python3", "grpcserver.py", "wsgi.py"]
