@@ -4,7 +4,8 @@ SERVICE_NAME = "order_service"
 SERVICE_ID = os.environ.get("ID", "default")
 
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "development")
-DEBUG = False if ENVIRONMENT == "production" else True
+# DEBUG = False if ENVIRONMENT == "production" else True
+DEBUG = True
 
 APP_PORT = os.environ.get("HTTP_PORT", 6298)
 

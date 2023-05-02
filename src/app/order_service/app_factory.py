@@ -3,6 +3,7 @@ from flask import Flask
 import redis
 
 from ping import ping
+from sync import sync
 
 PKG_NAME = os.path.dirname(os.path.realpath(__file__)).split("/")[-1]
 
@@ -23,13 +24,14 @@ def create_app(app_name=PKG_NAME):
         socket_timeout=2,
         socket_connect_timeout=2,
     )
-
+    app.leader_id = "3"
     app.url_map.strict_slashes = False
 
-    BASE_URL_PREFIX = f"/api/order_service_{app.config['SERVICE_ID']}"
+    BASE_URL_PREFIX = f"/api/order_service"
 
     with app.app_context():
         app.register_blueprint(ping, url_prefix=f"{BASE_URL_PREFIX}/ping")
+        app.register_blueprint(sync, url_prefix=f"{BASE_URL_PREFIX}/sync")
 
     @app.teardown_request
     def teardown_request(exception):

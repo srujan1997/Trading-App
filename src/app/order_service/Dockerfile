@@ -39,4 +39,4 @@ WORKDIR /order_service
 # Finally copying application code
 COPY . /order_service/
 
-ENTRYPOINT ["python3", "grpcserver.py", "wsgi.py"]
+ENTRYPOINT ["sh", "-c"," python3 grpcserver.py & python3 wsgi.py"]

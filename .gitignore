@@ -5,7 +5,7 @@
 .idea/
 
 #Output files
-src/app/order_service/transaction_log.csv
+order_service/transaction_log.csv
 src/app/catalog_service/output.json
 
 #Service test files

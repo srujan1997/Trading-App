@@ -3,8 +3,8 @@ import os
 SERVICE_NAME = "frontend_service"
 
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "development")
-DEBUG = False if ENVIRONMENT == "production" else True
-
+# DEBUG = False if ENVIRONMENT == "production" else True
+DEBUG = True
 APP_PORT = 8081
 
 REDIS = {

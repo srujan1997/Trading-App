@@ -24,7 +24,7 @@ def create_app(app_name=PKG_NAME):
         socket_timeout=2,
         socket_connect_timeout=2,
     )
-
+    app.leader_id = "3"
     app.url_map.strict_slashes = False
 
     BASE_URL_PREFIX = f"/api/frontend_service"

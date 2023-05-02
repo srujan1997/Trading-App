@@ -3,33 +3,45 @@ import csv
 import os
 from threading import Lock
 import socket
+import requests
 
 from request_handler import order_handler_pb2
 from request_handler import order_handler_pb2_grpc
 from request_handler import catalog_handler_pb2
 from request_handler import catalog_handler_pb2_grpc
+from cache import set_in_redis, get_from_redis
 
 txn_id = None
 lock = Lock()
 
 
 def log_transaction(txn_id, stock_name, trade_type, quantity):
-    log_file = open("transaction_log.csv", "a", encoding='UTF8', newline='')
+    _id = os.environ.get("ID")
+    log_file = open(f"transaction_log_{_id}.csv", "a+", encoding='UTF8', newline='')
     data = [txn_id, stock_name, trade_type, quantity]
     writer = csv.writer(log_file)
     writer.writerow(data)
     log_file.close()
 
 
+def get_new_transaction_data(transaction_id):
+    _id = os.environ.get("ID")
+    log_file = open(f"transaction_log_{_id}.csv", "r+", encoding='UTF8', newline='')
+    data = log_file.readlines()
+    return data[transaction_id+1:]
+
+
 def get_last_txn_id():
     global txn_id
-    log_file = open("transaction_log.csv", "r+", encoding='UTF8', newline='')
-    if not os.path.isfile("transaction_log.csv"):
+    _id = os.environ.get("ID")
+    if not os.path.isfile(f"transaction_log_{_id}.csv"):
+        log_file = open(f"transaction_log_{_id}.csv", "a+", encoding='UTF8', newline='')
         headers = ["transaction_id", "stock_name", "trade_type", "quantity"]
         writer = csv.writer(log_file)
         writer.writerow(headers)
         txn_id = 0
     else:
+        log_file = open(f"transaction_log_{_id}.csv", "r+", encoding='UTF8', newline='')
         data = log_file.readlines()
         if len(data) == 1:
             txn_id = 0
@@ -39,8 +51,36 @@ def get_last_txn_id():
             writer.writerow(headers)
             txn_id = 0
         else:
-            txn_id = int(data[-1][0])+1
+            txn_id = int(data[-1][0])
     log_file.close()
+
+
+def set_last_txn_id(transaction_id):
+    global txn_id
+    txn_id = transaction_id
+
+
+def send_txn_to_replicas(data):
+    port_map = {"1": "6298",
+                "2": "7298",
+                "3": "8298",
+                }
+    leader = get_from_redis("leader")
+    if not leader:
+        leader = "3"
+    for i in range(1, 4):
+        if i == int(leader):
+            continue
+        hostname = f"order_service_{i}"
+        try:
+            ip = socket.gethostbyname(hostname)
+        except Exception:
+            continue
+        url = f"http://{ip}:{port_map.get(str(i))}/api/order_service/sync/replicate_db"
+        body = {"data": data}
+        response = requests.post(url, json=body)
+
+    return True
 
 
 # Helper function to process the order
@@ -56,9 +96,12 @@ def process_order(stock_name, volume, trade_type):
                                                                trade_volume=volume, type=trade_type))
     if response.success == 1:
         lock.acquire()
-        log_transaction(txn_id, stock_name, trade_type, volume)
         txn_id += 1
+        log_transaction(txn_id, stock_name, trade_type, volume)
         lock.release()
+        if host_ip != "localhost":
+            set_in_redis("transaction_id", txn_id)
+            send_txn_to_replicas([txn_id, stock_name, trade_type, volume])
         return response.success, txn_id
     else:
         return response.success, -1

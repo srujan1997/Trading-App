@@ -3,6 +3,7 @@
 """
 This module creates a flask instance and ties it up with blueprints
 """
+import os
 
 from app_factory import create_app
 

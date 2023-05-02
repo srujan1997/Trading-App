@@ -28,24 +28,81 @@ services:
     networks:
       - lab
 
-  order_service:
+  order_service_1:
     image: order
-    container_name: order_service
-    environment: *environment
-#      - HTTP_PORT=6298
-#      - GRPC_PORT=6297
+    container_name: order_service_1
+    environment:
+      - ID=1
+      - CONFIG=config
+      - CACHE_URL=redis
+      - CACHE_PASSWORD=
+      - ENVIRONMENT=production
+      - HOST_IP=0.0.0.0
+      - CATALOG_SERVICE=catalog_service
+      - HTTP_PORT=6298
+      - GRPC_PORT=6297
     build: ./order_service
     ports:
       - 6297:6297
       - 6298:6298
     volumes:
-      - ./order_service/transaction_log.csv:/order_service/transaction_log.csv
+      - ./order_service/transaction_log_1.csv:/order_service/transaction_log_1.csv
     depends_on:
       - redis
       - catalog_service
     networks:
       - lab
 #    healthcheck: *healthcheck
+
+  order_service_2:
+    image: order
+    container_name: order_service_2
+    environment:
+      - ID=2
+      - CONFIG=config
+      - CACHE_URL=redis
+      - CACHE_PASSWORD=
+      - ENVIRONMENT=production
+      - HOST_IP=0.0.0.0
+      - CATALOG_SERVICE=catalog_service
+      - HTTP_PORT=7298
+      - GRPC_PORT=7297
+    build: ./order_service
+    ports:
+      - 7297:7297
+      - 7298:7298
+    volumes:
+      - ./order_service/transaction_log_2.csv:/order_service/transaction_log_2.csv
+    depends_on:
+      - redis
+      - catalog_service
+    networks:
+      - lab
+
+  order_service_3:
+    image: order
+    container_name: order_service_3
+    environment:
+      - ID=3
+      - CONFIG=config
+      - CACHE_URL=redis
+      - CACHE_PASSWORD=
+      - ENVIRONMENT=production
+      - HOST_IP=0.0.0.0
+      - CATALOG_SERVICE=catalog_service
+      - HTTP_PORT=8298
+      - GRPC_PORT=8297
+    build: ./order_service
+    ports:
+      - 8297:8297
+      - 8298:8298
+    volumes:
+      - ./order_service/transaction_log_3.csv:/order_service/transaction_log_3.csv
+    depends_on:
+      - redis
+      - catalog_service
+    networks:
+      - lab
 
   frontend_service:
     image: frontend
@@ -55,7 +112,9 @@ services:
     ports:
       - 8081:8081
     depends_on:
-      - order_service
+      - order_service_1
+      - order_service_2
+      - order_service_3
     networks:
       - lab
 
