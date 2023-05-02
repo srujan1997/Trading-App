@@ -3,10 +3,10 @@
 """
 This module creates a flask instance and ties it up with blueprints
 """
-
+import os
 from app_factory import create_app
 
 app = create_app(app_name="frontend_service")
 
 if __name__ == "__main__":
-    app.run(host='127.0.0.1', port=app.config['APP_PORT'])
+    app.run(host=os.environ.get("HOST_IP", "localhost"), port=app.config['APP_PORT'])

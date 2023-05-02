@@ -1,9 +1,19 @@
 version: "3.8"
 
 x-environment: &environment
+  - CONFIG=config
+  - CACHE_URL=redis
+  - CACHE_PASSWORD=
+  - ENVIRONMENT=production
   - HOST_IP=0.0.0.0
   - CATALOG_SERVICE=catalog_service
   - ORDER_SERVICE=order_service
+
+#x-healthcheck: &healthcheck
+#  test: curl --fail -s http://localhost:5000/ping || exit 1 #Need to start leader election or notify frontend.
+#  interval: 30s
+#  timeout: 5s
+#  retries: 1
 
 services:
   catalog_service:
@@ -22,15 +32,20 @@ services:
     image: order
     container_name: order_service
     environment: *environment
+#      - HTTP_PORT=6298
+#      - GRPC_PORT=6297
     build: ./order_service
     ports:
       - 6297:6297
+      - 6298:6298
     volumes:
       - ./order_service/transaction_log.csv:/order_service/transaction_log.csv
     depends_on:
+#      - redis_service
       - catalog_service
     networks:
       - lab
+#    healthcheck: *healthcheck
 
   frontend_service:
     image: frontend
@@ -43,6 +58,14 @@ services:
       - order_service
     networks:
       - lab
+
+#  redis:
+#    image: redis
+#    container_name: redis_service
+#    ports:
+#      - 6379:6379
+#    volumes:
+#      - ./cache_data:/data
 
 networks:
   lab:
