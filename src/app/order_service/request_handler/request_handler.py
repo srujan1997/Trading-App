@@ -11,7 +11,6 @@ from request_handler import catalog_handler_pb2
 from request_handler import catalog_handler_pb2_grpc
 from cache import set_in_redis, get_from_redis
 
-txn_id = None
 lock = Lock()
 
 
@@ -32,7 +31,6 @@ def get_new_transaction_data(transaction_id):
 
 
 def get_last_txn_id():
-    global txn_id
     _id = os.environ.get("ID")
     if not os.path.isfile(f"transaction_log_{_id}.csv"):
         log_file = open(f"transaction_log_{_id}.csv", "a+", encoding='UTF8', newline='')
@@ -53,11 +51,7 @@ def get_last_txn_id():
         else:
             txn_id = int(data[-1][0])
     log_file.close()
-
-
-def set_last_txn_id(transaction_id):
-    global txn_id
-    txn_id = transaction_id
+    return txn_id
 
 
 def send_txn_to_replicas(data):
@@ -65,9 +59,7 @@ def send_txn_to_replicas(data):
                 "2": "7298",
                 "3": "8298",
                 }
-    leader = get_from_redis("leader")
-    if not leader:
-        leader = "3"
+    leader = get_from_redis("leader_id")
     for i in range(1, 4):
         if i == int(leader):
             continue
@@ -85,7 +77,8 @@ def send_txn_to_replicas(data):
 
 # Helper function to process the order
 def process_order(stock_name, volume, trade_type):
-    global txn_id, lock
+    global lock
+    txn_id = int(get_from_redis("transaction_id"))
     host_ip = os.environ.get("HOST_IP", "localhost")
     hostname = os.environ.get("CATALOG_SERVICE", host_ip)
     ip = socket.gethostbyname(hostname)
@@ -100,7 +93,7 @@ def process_order(stock_name, volume, trade_type):
         log_transaction(txn_id, stock_name, trade_type, volume)
         lock.release()
         if host_ip != "localhost":
-            set_in_redis("transaction_id", txn_id)
+            # set_in_redis("transaction_id", txn_id)
             send_txn_to_replicas([txn_id, stock_name, trade_type, volume])
         return response.success, txn_id
     else:

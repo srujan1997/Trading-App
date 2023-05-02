@@ -11,12 +11,13 @@ def notify_leader():
     new_leader = req_dict.get("leader_id")
 
     from sync.sync import check_and_sync_db
-    if app.leader_id == new_leader:
+    from cache import get_from_redis
+    leader_id = get_from_redis("leader_id")
+    if leader_id == new_leader:
         return success_response("No new information recorded")
 
     if app.config["SERVICE_ID"] == new_leader:
         check_and_sync_db(new_leader)
-    app.leader_id = new_leader
     return success_response("Information received")
 
 

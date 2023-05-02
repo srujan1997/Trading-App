@@ -8,7 +8,7 @@ from request_handler.order_handler_pb2_grpc import add_OrderHandlerServicer_to_s
 
 # Main server method
 def serve():
-    get_last_txn_id()
+    # get_last_txn_id()
     host_name = os.environ.get("HOST_IP", "localhost")
     port = os.environ.get("GRPC_PORT", "6297")
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=5))

@@ -22,7 +22,9 @@ def order():
         return bad_request(error_codes.PARAMETERS_MISSING, "Parameter Missing")
 
     from trade.trade import order
+    from cache import set_in_redis
     _, txn_id = order(stock_name, volume, trade_type)
+    set_in_redis("transaction_id", str(txn_id))
 
     return bad_request() if txn_id == -1 else success({"transaction_number": txn_id})
 

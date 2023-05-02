@@ -2,8 +2,6 @@ import os
 import socket
 import requests
 
-from cache import set_in_redis
-
 
 port_map = {"1": "6298",
             "2": "7298",
@@ -27,7 +25,6 @@ def get_leader_id():
             leader = i
 
     notify_leader(leader)
-    set_in_redis("leader", leader)
     return str(leader)
 
 
