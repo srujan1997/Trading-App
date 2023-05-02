@@ -39,4 +39,4 @@ WORKDIR /frontend_service
 # Finally copying application code
 COPY . /frontend_service/
 
-ENTRYPOINT ["python3", "server.py"]
+ENTRYPOINT ["python3", "wsgi.py"]

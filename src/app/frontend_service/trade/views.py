@@ -41,4 +41,4 @@ def lookup():
     from trade.trade import lookup
     flag, stock_details = lookup(stock_name)
 
-    return not_found(error_text="Stock not found") if flag == -1 else success(dict(stock_details))
+    return not_found(error_text="Stock not found") if flag == -1 else success(stock_details)

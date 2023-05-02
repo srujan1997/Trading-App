@@ -14,3 +14,6 @@ src/app/order_service/client_test.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
+
+#redis volumes
+cache_data/dump.rdb
