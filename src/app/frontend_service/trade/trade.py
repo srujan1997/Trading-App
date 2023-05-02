@@ -7,6 +7,7 @@ from trade import catalog_handler_pb2_grpc
 from trade import order_handler_pb2
 from trade import order_handler_pb2_grpc
 from trade.leader import get_leader_id
+import requests
 from cache import get_dict_redis, set_dict_redis, get_from_redis, set_in_redis
 
 
@@ -51,5 +52,25 @@ def order(stock_name, volume, trade_type):
     return response.success, response.transaction_id
 
 
-def get_order_details():
-    pass
+def get_order_details(order_number):
+
+    port_map = {"1": "6298",
+                "2": "7298",
+                "3": "8298",
+                "default": "6298"}
+    host_ip = os.environ.get("HOST_IP", "localhost")
+    hostname = os.environ.get("ORDER_SERVICE", host_ip)
+    leader_id = "default" if host_ip == "localhost" else get_from_redis("leader_id")
+    if host_ip != "local_host":
+        hostname += f"_{leader_id}"
+
+    try:
+        ip = socket.gethostbyname(hostname)
+    except Exception:
+        leader_id = get_leader_id()
+        set_in_redis("leader_id", leader_id)
+        return get_order_details(order_number)
+    port = port_map.get(leader_id, "6298")
+    url = f"http://{ip}:{port}/api/order_service/order_query/query/{order_number}"
+    res=requests.get(url)
+    return res.json()

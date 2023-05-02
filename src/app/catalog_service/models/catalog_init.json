@@ -19,6 +19,31 @@
                   "quantity":100,
                   "status":0
   },
+  "FreedomCo": {
+                  "price":72.7,
+                  "quantity":100,
+                  "status":0
+  },
+  "CityCorp": {
+                  "price":12.78,
+                  "quantity":100,
+                  "status":0
+  },
+  "MindComp": {
+                  "price":98,
+                  "quantity":100,
+                  "status":0
+  },
+  "BankCo": {
+                  "price":77.96,
+                  "quantity":100,
+                  "status":0
+  },
+  "HealthCo": {
+                  "price":20.14,
+                  "quantity":100,
+                  "status":1
+  },
   "Meta": {
                   "price":150.22,
                   "quantity":100,

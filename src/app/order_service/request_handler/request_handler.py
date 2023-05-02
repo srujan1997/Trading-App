@@ -99,6 +99,17 @@ def process_order(stock_name, volume, trade_type):
     else:
         return response.success, -1
 
+def read_particular_order(order_number):
+    log_array = []
+    _id = os.environ.get("ID")
+    try:
+        with open(f"transaction_log_{_id}.csv", "r", encoding='UTF8', newline='') as csvfile:
+            reader = csv.reader(csvfile)
+            for row in reader:
+                log_array.append(row)
+        return log_array[int(order_number)+1]
+    except IndexError:
+        return {}
 
 class OrderHandlerServicer(order_handler_pb2_grpc.OrderHandlerServicer):
     """Provides methods that implement functionality of request handler server."""

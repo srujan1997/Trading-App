@@ -5,7 +5,7 @@ import error_codes
 from response import success, bad_request, not_found
 
 
-@trade.route("/order", methods=["POST"])
+@trade.route("/orders", methods=["POST"])
 def order():
     """
         Order
@@ -22,25 +22,29 @@ def order():
         return bad_request(error_codes.PARAMETERS_MISSING, "Parameter Missing")
 
     from trade.trade import order
-    from cache import set_in_redis
     _, txn_id = order(stock_name, volume, trade_type)
-    set_in_redis("transaction_id", str(txn_id))
 
     return bad_request() if txn_id == -1 else success({"transaction_number": txn_id})
 
 
-@trade.route("/lookup", methods=["GET"])
-def lookup():
+@trade.route("/stocks/<stock_name>", methods=["GET"])
+def lookup(stock_name):
     """
         Order lookup
-        Required params:None
+        Required params::<stock_name>
     """
-    req_dict = request.json #check why request.args not working for params.
-    stock_name = req_dict.get("name", None)
-    if stock_name is None:
-        return bad_request(error_codes.PARAMETERS_MISSING, "Stock name is missing")
 
     from trade.trade import lookup
     flag, stock_details = lookup(stock_name)
 
     return not_found(error_text="Stock not found") if flag == -1 else success(stock_details)
+
+@trade.route("/orders/<order_number>", methods=["GET"])
+def order_query(order_number):
+    """
+        Order
+        Required params:<order_number>
+    """
+    from trade.trade import get_order_details
+    p = get_order_details(order_number)
+    return bad_request() if p =={} else success({"number": p[0], "name" : p[1], "type" : p[2], "quantity" : p[3]})

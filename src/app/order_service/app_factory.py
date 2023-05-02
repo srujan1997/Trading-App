@@ -4,6 +4,7 @@ import redis
 
 from ping import ping
 from sync import sync
+from order_query import order_query
 
 PKG_NAME = os.path.dirname(os.path.realpath(__file__)).split("/")[-1]
 
@@ -31,6 +32,7 @@ def create_app(app_name=PKG_NAME):
     with app.app_context():
         app.register_blueprint(ping, url_prefix=f"{BASE_URL_PREFIX}/ping")
         app.register_blueprint(sync, url_prefix=f"{BASE_URL_PREFIX}/sync")
+        app.register_blueprint(order_query, url_prefix=f"{BASE_URL_PREFIX}/order_query")
 
     @app.teardown_request
     def teardown_request(exception):
