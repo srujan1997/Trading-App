@@ -1,7 +1,7 @@
 import enum
 import json
 import os
-
+from threading import Lock
 from cache import delete_from_redis
 
 
@@ -13,7 +13,7 @@ class StockStatus(enum.Enum):
 
 # Defining a catalog of the stocks required
 catalog = {}
-
+lock_ = Lock()
 
 def load_catalog():
     """
@@ -44,7 +44,10 @@ def lookup(stock_name):
     :param stock_name:  String
     :return: Tuple of (query_success(int), stock_details(dict))
     """
+    global lock_
+    lock_.acquire()
     stock_details = catalog.get(stock_name, None)
+    lock_.release()
     if not stock_details:
         return -1, {}
     return (1, stock_details) if stock_details["status"] is StockStatus.active.value else (0, stock_details)

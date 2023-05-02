@@ -3,7 +3,7 @@
 Before entering any of the service directories, please do install all the required libraries by running
 pip3 install -r requirements.txt
 
-### Running Locally/edlab
+### Running Locally
 
 1. Under each directory of services, you would need to execute python3 server.py to start up services.
 2. Once done, you can run the client.py file and appropriately mention the inputs for it.
@@ -23,12 +23,16 @@ pip3 install -r requirements.txt
 ### Performance Evaluation
 
 1. Please go to the frontend_service directory and execute the file performance.py to get average latency results for trade and lookup.
-2. If you instead want to execute multiple clients concurrently, please run load_test.sh in the frontend_service directory. Currently, it can run for 6 clients concurrently, but you can edit it and run for as many clients as you want.
+2. If you instead want to execute multiple clients concurrently, please run load_test.sh in the frontend_service directory. Currently, it can run for 5 clients concurrently, but you can edit it and run for as many clients as you want.
 
 To execute the load_test.sh file, follow the below steps:
 
 1. chmod u+x load_test.sh
 2. ./load_test.sh
+
+### Database Syncing
+
+In order to ensure fault tolerance, our system is designed to function seamlessly even if one replica experiences an outage. However, it is imperative to always maintain at least one original copy of the data to retrieve the system's state. Without this original copy, the retrieval of the state would be rendered impossible.
 
 ### Running Test Cases
 
@@ -36,15 +40,9 @@ To execute the load_test.sh file, follow the below steps:
 
 ### Contributor Notes:
 
-Please find the performance evaluation report for part 3, design documents, output files and test cases output in the docs directory.
+Please find the performance evaluation report, design documents and output files in the docs directory.
 
 A brief division of work between the team members:
 
-Srujan(srujan1997) : Development of order_service, catalog_service, application containeriztion, and design doc
-Tejas(tejasgnaik) : Development of frontend_service, performance evaluation, generating output files, writing testcases and design doc
-
-Note: We have utilised 1 free days for this lab.
-
-Late Days Used for Lab1: 2
-Late Days Used for Lab2: 1
-Total Late Days Used: 3
+Srujan(srujan1997) : Refactoring code to use Flask framework, replication, leader election and design doc<br>
+Tejas(tejasgnaik) : implementing new GET order request, performing performance evaluation, generating output files, deploying into AWS and design doc

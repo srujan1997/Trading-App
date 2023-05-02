@@ -25,8 +25,9 @@ services:
       - 5297:5297
     volumes:
       - ./catalog_service/output.json:/catalog_service/output.json
-    networks:
+    networks: # please remove networks if you want to run AWS
       - lab
+    healthcheck: *healthcheck
 
   order_service_1:
     image: order
@@ -50,7 +51,7 @@ services:
     depends_on:
       - redis
       - catalog_service
-    networks:
+    networks: # please remove networks if you want to run AWS
       - lab
     healthcheck: *healthcheck
 
@@ -76,7 +77,7 @@ services:
     depends_on:
       - redis
       - catalog_service
-    networks:
+    networks: # please remove networks if you want to run AWS
       - lab
     healthcheck: *healthcheck
 
@@ -102,7 +103,7 @@ services:
     depends_on:
       - redis
       - catalog_service
-    networks:
+    networks: # please remove networks if you want to run AWS
       - lab
     healthcheck: *healthcheck
 
@@ -114,10 +115,11 @@ services:
     ports:
       - 8081:8081
     depends_on:
+      - redis
       - order_service_1
       - order_service_2
       - order_service_3
-    networks:
+    networks: # please remove networks if you want to run AWS
       - lab
     healthcheck: *healthcheck
 
@@ -128,10 +130,10 @@ services:
       - 6379:6379
     volumes:
       - ./cache_data:/data
-    networks:
+    networks: # please remove networks if you want to run AWS
       - lab
     healthcheck: *healthcheck
 
-networks:
+networks: # please remove networks if you want to run AWS
   lab:
     external: true

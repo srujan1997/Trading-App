@@ -132,7 +132,9 @@ def read_particular_order(order_number):
             reader = csv.reader(csvfile)
             for row in reader:
                 log_array.append(row)
-        return log_array[int(order_number)+1]
+        if(int(order_number)<1):
+            return {}
+        return log_array[int(order_number)-1]
     except IndexError:
         return {}
 
