@@ -9,6 +9,11 @@ PKG_NAME = os.path.dirname(os.path.realpath(__file__)).split("/")[-1]
 
 
 def create_app(app_name=PKG_NAME):
+    """
+    Description: Flask app factory method with all app contexts.
+    :param app_name: string
+    :return: app (Flask app)
+    """
     app = Flask(app_name)
     app_config = os.environ.get("CONFIG", "config")
     app.config.from_object(app_config)
@@ -31,7 +36,8 @@ def create_app(app_name=PKG_NAME):
     with app.app_context():
         if app.redis_connection.get("leader_id") is None:
             app.redis_connection.setex("leader_id", 1 * 60 * 60, "3")
-        app.redis_connection.setex("transaction_id", 1 * 60 * 60, "0")
+        if app.redis_connection.get("transaction_id") is None:
+            app.redis_connection.setex("transaction_id", 1 * 60 * 60, "0")
         app.register_blueprint(ping, url_prefix=f"{BASE_URL_PREFIX}/ping")
         app.register_blueprint(trade, url_prefix=f"{BASE_URL_PREFIX}/trade")
 

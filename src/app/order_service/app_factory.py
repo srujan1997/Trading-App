@@ -10,6 +10,11 @@ PKG_NAME = os.path.dirname(os.path.realpath(__file__)).split("/")[-1]
 
 
 def create_app(app_name=PKG_NAME):
+    """
+    Description: Flask app factory method with all app contexts.
+    :param app_name: string
+    :return: app (Flask app)
+    """
     app = Flask(app_name)
     app_config = os.environ.get("CONFIG", "config")
     app.config.from_object(app_config)

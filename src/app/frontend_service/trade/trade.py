@@ -6,12 +6,17 @@ from trade import catalog_handler_pb2
 from trade import catalog_handler_pb2_grpc
 from trade import order_handler_pb2
 from trade import order_handler_pb2_grpc
-from trade.leader import get_leader_id
+from trade.leader import get_leader_id, notify_leader
 import requests
 from cache import get_dict_redis, set_dict_redis, get_from_redis, set_in_redis
 
 
 def lookup(stock_name):
+    """
+    Description: Helper to handle lookup requests.
+    :param stock_name: string
+    :return: request_success, stock_details (Tuple(int, dict))
+    """
     stock_details = get_dict_redis(stock_name)
     if stock_details:
         return (1, stock_details) if stock_details["status"] == 0 else (0, stock_details)
@@ -28,6 +33,13 @@ def lookup(stock_name):
 
 
 def order(stock_name, volume, trade_type):
+    """
+    Description: Helper to handle order requests.
+    :param stock_name: string
+    :param volume: int
+    :param trade_type: string
+    :return: request_success, stock_details (Tuple(int, string))
+    """
     port_map = {"1": "6297",
                 "2": "7297",
                 "3": "8297",
@@ -42,6 +54,7 @@ def order(stock_name, volume, trade_type):
         ip = socket.gethostbyname(hostname)
     except Exception:
         leader_id = get_leader_id()
+        notify_leader(leader_id)
         set_in_redis("leader_id", leader_id)
         return order(stock_name, volume, trade_type)
 
@@ -53,7 +66,11 @@ def order(stock_name, volume, trade_type):
 
 
 def get_order_details(order_number):
-
+    """
+    Description: Helper to get order details from transaction_id.
+    :param order_number: string
+    :return: order_details (dict)
+    """
     port_map = {"1": "6298",
                 "2": "7298",
                 "3": "8298",
@@ -72,5 +89,5 @@ def get_order_details(order_number):
         return get_order_details(order_number)
     port = port_map.get(leader_id, "6298")
     url = f"http://{ip}:{port}/api/order_service/order_query/query/{order_number}"
-    res=requests.get(url)
+    res = requests.get(url)
     return res.json()
