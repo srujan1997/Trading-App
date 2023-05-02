@@ -3,24 +3,14 @@
 Before entering any of the service directories, please do install all the required libraries by running
 pip3 install -r requirements.txt
 
-### Running Locally
-
-1. Under each directory of services, you would need to execute python3 server.py to start up services.
-2. Once done, you can run the client.py file and appropriately mention the inputs for it.
-3. Or just manually hit or execute the GET and POST requests from Postman or browser to evaluate the services.
-
-### Using client.py
-
-1. The client.py file resides in the frontend_service directory.
-2. On execution, it will ask the user to pass hostname, number of requests and the trade request probability
-
-###  Using docker-compose:
+### Running Locally using docker-compose
 
 1. docker network create lab - Create this network initially
 2. docker-compose build && docker-compose up -d - To start services.
-3. docker-compose down - To stop the application.
+3. Manually hit or execute the GET and POST requests from Postman or browser to evaluate the services.
+4. docker-compose down - To stop the application.
 
-### Performance Evaluation
+### Performance Evaluation on AWS
 
 1. Please go to the frontend_service directory and execute the file performance.py to get average latency results for trade and lookup.
 2. If you instead want to execute multiple clients concurrently, please run load_test.sh in the frontend_service directory. Currently, it can run for 5 clients concurrently, but you can edit it and run for as many clients as you want.
