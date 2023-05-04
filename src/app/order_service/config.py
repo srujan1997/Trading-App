@@ -1,3 +1,5 @@
+# Config file for http server
+
 import os
 
 SERVICE_NAME = "order_service"

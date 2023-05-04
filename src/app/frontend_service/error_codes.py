@@ -1,3 +1,5 @@
+# Custom errors codes for HTTP request handling.
+
 # Unknown
 UNKNOWN = 2000
 

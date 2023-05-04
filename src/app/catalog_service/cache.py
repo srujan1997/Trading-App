@@ -1,7 +1,14 @@
+# This file contains all the cache related helper functions
+
 import redis
 
 
 def delete_from_redis(key):
+    """
+    Description: To delete a key from redis
+    :param key:
+    :return: None
+    """
     redis_conn = redis.StrictRedis(
         host="redis",
         port=6379,

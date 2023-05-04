@@ -19,5 +19,4 @@ def serve():
 
 
 if __name__ == '__main__':
-    #host = input("Enter hostname: ")
     serve()

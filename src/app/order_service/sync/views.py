@@ -1,5 +1,4 @@
 from flask import request
-from flask import current_app as app
 
 from . import sync
 from response import success_response
@@ -7,6 +6,10 @@ from response import success_response
 
 @sync.route("/notify/leader", methods=["PUT"])
 def notify_leader():
+    """
+    Desscription: API to notify elected leader to order service.
+    :return: API response (Flask response object)
+    """
     req_dict = request.json
     new_leader = req_dict.get("leader_id")
 
@@ -16,13 +19,16 @@ def notify_leader():
     if leader_id == new_leader:
         return success_response("No new information recorded")
 
-    if app.config["SERVICE_ID"] == new_leader:
-        check_and_sync_db(new_leader)
+    check_and_sync_db()
     return success_response("Information received")
 
 
 @sync.route("/sync_db", methods=["GET"])
 def synchronize_transactions():
+    """
+    Description: Helper API to synchronize databases between replicas.
+    :return: API response (Flask response object)
+    """
     req_dict = request.json
 
     from request_handler.request_handler import get_new_transaction_data
@@ -30,8 +36,22 @@ def synchronize_transactions():
     return success_response(data)
 
 
-@sync.route("/replicate_db", methods=["POST"])
+@sync.route("/last_transaction", methods=["GET"])
+def last_transaction_id():
+    """
+    Description: API to get last transaction id from the service local database.
+    :return: API response (Flask response object)
+    """
+    from request_handler.request_handler import get_last_txn_id
+    return success_response(get_last_txn_id())
+
+
+@sync.route("/replicate_transaction", methods=["POST"])
 def replicate_transactions():
+    """
+    Description: Helper API to synchronize successful order log with healthy replicas.
+    :return: API response (Flask response object)
+    """
     req_dict = request.json
 
     from sync.sync import replicate_db_txn
