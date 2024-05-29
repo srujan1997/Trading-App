@@ -3,7 +3,7 @@
    `✅` Distributed Application with microservices architecture <br>
    `✅` Highly Consistent <br>
    `✅` Scalable <br>
-   `✅` Fault Tolerance <br>
+   `✅` Fault Tolerant <br>
    `✅` Concurrent Request Handling <br>
    `✅` Replication <br>
    `✅` Cache <br>
