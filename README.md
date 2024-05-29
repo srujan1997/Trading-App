@@ -1,15 +1,15 @@
 # Trading Application Backend (Asterix and Double Trouble)
 
-   Distributed Application with microservices architecture `✅`
-   Highly Consistent `✅`
-   Scalable `✅`
-   Fault Tolerance `✅`
-   Concurrent Request Handling `✅`
-   Replication `✅`
-   Cache `✅`
-   Containerized `✅`
-   Deploy on AWS `✅`
-   Performance Testing `✅`
+   Distributed Application with microservices architecture `✅`<br>
+   Highly Consistent `✅`<br>
+   Scalable `✅`<br>
+   Fault Tolerance `✅`<br>
+   Concurrent Request Handling `✅`<br>
+   Replication `✅`<br>
+   Cache `✅`<br>
+   Containerized `✅`<br>
+   Deploy on AWS `✅`<br>
+   Performance Testing `✅`<br>
 
 [Design Document] (https://github.com/srujan1997/Trading_App/blob/main/docs/design_document.pdf)
 
@@ -168,8 +168,8 @@ Finally, crash failures can be simulated by killing a random order service repli
 and then bring it back online after some time. Repeat this experiment several times and try to test the case 
 when the leader is killed.
 
-[Performance Testing Results] (https://github.com/srujan1997/Trading_App/blob/main/docs/performance_testing_results.pdf)
-[Sample Outputs] (https://github.com/srujan1997/Trading_App/blob/main/docs/output_snippets.pdf)
+[Performance Testing Results] (https://github.com/srujan1997/Trading_App/blob/main/docs/performance_testing_results.pdf)<br>
+[Sample Outputs] (https://github.com/srujan1997/Trading_App/blob/main/docs/output_snippets.pdf)<br>
 
 ### Contributors
 [Srujan] (https://github.com/srujan1997/)<br>
