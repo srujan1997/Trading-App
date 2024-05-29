@@ -1,17 +1,17 @@
 # Trading Application Backend (Asterix and Double Trouble)
 
-   [:heavy_check_mark:] Distributed Application with microservices architecture
-   [:heavy_check_mark:] Highly Consistent
-   [:heavy_check_mark:] Scalable
-   [:heavy_check_mark:] Fault Tolerance
-   [:heavy_check_mark:] Concurrent Request Handling
-   [:heavy_check_mark:] Replication
-   [:heavy_check_mark:] Cache
-   [:heavy_check_mark:] Containerized
-   [:heavy_check_mark:] Deploy on AWS
-   [:heavy_check_mark:] Performance Testing
+   Distributed Application with microservices architecture `✅`
+   Highly Consistent `✅`
+   Scalable `✅`
+   Fault Tolerance `✅`
+   Concurrent Request Handling `✅`
+   Replication `✅`
+   Cache `✅`
+   Containerized `✅`
+   Deploy on AWS `✅`
+   Performance Testing `✅`
 
-[Design Document] (Trading_App/docs/design_document.pdf)
+[Design Document] (https://github.com/srujan1997/Trading_App/blob/main/docs/design_document.pdf)
 
 ## Description
 
@@ -168,14 +168,14 @@ Finally, crash failures can be simulated by killing a random order service repli
 and then bring it back online after some time. Repeat this experiment several times and try to test the case 
 when the leader is killed.
 
-[Performance Testing Results] (Trading_App/docs/performance_testing_results.pdf)
-[Sample Outputs] (Trading_App/docs/output_snippets.pdf)
+[Performance Testing Results] (https://github.com/srujan1997/Trading_App/blob/main/docs/performance_testing_results.pdf)
+[Sample Outputs] (https://github.com/srujan1997/Trading_App/blob/main/docs/output_snippets.pdf)
 
 ### Contributors
-[Srujan] (https://github.com/srujan1997/)
-[Tejas] (https://github.com/tejasgnaik/)
+[Srujan] (https://github.com/srujan1997/)<br>
+[Tejas] (https://github.com/tejasgnaik/)<br>
 
 ## References
 
-1. Learn about Gaul (the region) https://en.wikipedia.org/wiki/Gaul and the Gauls (the people) https://en.wikipedia.org/wiki/Gauls
-2. Learn about the comics that these labs are based on https://en.wikipedia.org/wiki/Asterix
+1. Learn about Gaul (the region) https://en.wikipedia.org/wiki/Gaul and the Gauls (the people) https://en.wikipedia.org/wiki/Gauls<br>
+2. Learn about the comics that this project is based on https://en.wikipedia.org/wiki/Asterix
