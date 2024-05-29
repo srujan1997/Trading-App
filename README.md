@@ -1,15 +1,15 @@
 # Trading Application Backend (Asterix and Double Trouble)
 
-   Distributed Application with microservices architecture `✅`<br>
-   Highly Consistent `✅`<br>
-   Scalable `✅`<br>
-   Fault Tolerance `✅`<br>
-   Concurrent Request Handling `✅`<br>
-   Replication `✅`<br>
-   Cache `✅`<br>
-   Containerized `✅`<br>
-   Deploy on AWS `✅`<br>
-   Performance Testing `✅`<br>
+   `✅` Distributed Application with microservices architecture <br>
+   `✅` Highly Consistent <br>
+   `✅` Scalable <br>
+   `✅` Fault Tolerance <br>
+   `✅` Concurrent Request Handling <br>
+   `✅` Replication <br>
+   `✅` Cache <br>
+   `✅` Containerized <br>
+   `✅` Deploy on AWS <br>
+   `✅` Performance Testing <br>
 
 [Design Document] (https://github.com/srujan1997/Trading_App/blob/main/docs/design_document.pdf)
 
