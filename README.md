@@ -1,191 +1,181 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-8d59dc4de5201274e310e4c54b9627a8934c3b88527886e3b421487c677d23eb.svg)](https://classroom.github.com/a/9leuiy3v)
-Compsci 677: Distributed and Operating Systems
+# Trading Application Backend (Asterix and Double Trouble)
 
-Spring 2023
+   [:heavy_check_mark:] Distributed Application with microservices architecture
+   [:heavy_check_mark:] Highly Consistent
+   [:heavy_check_mark:] Scalable
+   [:heavy_check_mark:] Fault Tolerance
+   [:heavy_check_mark:] Concurrent Request Handling
+   [:heavy_check_mark:] Replication
+   [:heavy_check_mark:] Cache
+   [:heavy_check_mark:] Containerized
+   [:heavy_check_mark:] Deploy on AWS
+   [:heavy_check_mark:] Performance Testing
 
-# Lab 3: Asterix and Double Trouble  --  Replication, Caching, and Fault Tolerance
+[Design Document] (Trading_App/docs/design_document.pdf)
 
-## Goals and Learning Outcomes
+## Description
 
-The lab has the following learning outcomes with regard to concepts covered in class.
+Backend for a stock trading platform.The application consists of three microservices: 
+a front-end service, a catalog service, and an order service. To ensure high performance and tolerance 
+to failures, modern design practices were used. Implemented a two-tier design (a front-end tier and a
+back-end tier)  for the app using microservices at each tier. The front-end is implemented as a single 
+microservice, while the back-end is implemented as two separate services: a stock catalog service and 
+an order service.
 
-* Learn about caching, replication, and consistency.
-* Learn about the concepts of fault tolerance and high availability.
-* Learn about how to deploy your application on the cloud.
+### Front-end Service
 
-## Information about your submission
+The clients can communicate with the front-end service using REST APIs. The client can look up the details 
+of available stocks, place order and query placed orders. The server listens to HTTP requests on a socket port 
+and assigns them to a thread pool. A simple thread-per-request model is used. The thread parses the HTTP request 
+to extract the GET/POST command and redirects request to the Catalog or Order service as mentioned below. 
+The response from this back-end service is used to construct a json response and sent back to the client as response.
 
-1. Name and email: add your name and email here.
-2. Team member name and email: add team member info. say none if this is a solo submission
-3. Number of late days used for this lab: say zero if none used
-4. Number of late days used so far including this lab: say zero if none used.
+### Catalog Service
 
-## Instructions
+The  catalog service maintains a list of all stocks traded in the stock market. It maintains the trading volume 
+of each stock and the number of stocks available for sale. When the front-end service receives a Lookup request, 
+it will forward the request to the catalog service. The catalog service maintains the catalog data, both in 
+memory and in a CSV or text file on disk ("database"). The disk file will persist the state of the catalog. 
+When the service starts up, it initializes itself from the database disk file.
 
-1. You may work in groups of two for this lab. If you decide to work in groups, you should briefly
-   describe how the work is divided between the two team members in your README file. Be sure to
-   list the names of all team members at the top of this README file.
-2. You can use either Python or Java for this assignment. You may optionally use C++, but TA support
-   for C++ issues will be limited. For this lab you may use different languages for different
-   microservices if you want.
-3. Do's and don'ts:
-   * discuss lab with other students: allowed
-   * use of AI tools: allowed with attribution (be sure to read the policy in course syllabus)
-   * use code from others/Internet/friends/coders for hire: disallowed
-   * ask TAs for clarifications/help: always allowed
+While lookup requests simply read the catalog, trade requests will be sent to the order service, which will 
+then contact the catalog service to update  the volume of stocks traded in the catalog. It will also increment 
+or decrement the number of stocks available for sale, depending on the type of trade request. Stocks of each 
+company available for sale are initialized to 100.
 
-## Lab Description
+The catalog service is implemented as a server that listens to request from the front-end service or the order 
+service. The catalog service exposes an internal gRPC interface to these two components.
 
-The Gauls have really taken to stock trading and trading has become their village pass time. To ensure 
-high performance and tolerance to failures, they have decided to adopt modern design practices. 
+Like the front-end server, threads are employed to service incoming request. Since the catalog can be accessed 
+concurrently by more than one thread, synchronization is used to protect reads and updates to the catalog. 
+Read-write locks were used for higher performance.
 
-This project is based on lab 2. You can reuse some of the code you wrote in lab 2 if you want. Your goal 
-is to help the Gauls by adding caching, replication, and fault tolerance to the stock bazaar application that were
-implemented in the previous labs. Here are some basic requirements:
+### Order Service
 
-1.  The stock bazaar application consists of three microservices: a front-end service, a catalog
-    service, and an order service.
+When the front-end service receives an order request, it will forward the request to the order service. 
+The order service still interacts with the catalog service to complete the order. Specifically, a buy trade 
+request succeeds only if the remaining quantity of the stock is greater than the requested quantity, and the 
+quantity is decremented. A sell trade request simply increase the remaining quantity of the stock.
 
-2.  The front-end service exposes the following REST APIs as they were defined in lab2:
+If the order was successful, the order service generates an transaction number and returns it to the 
+front-end service. The order service also maintains the order log (including transaction number, stock name,
+order type, and quantity) in a persistent manner. Similar to the catalog service, a simple CSV or text file 
+on disk is used as the persistent storage (database). The catalog service exposes an internal gRPC interface
 
-    *   `GET /stocks/<stock_name>`
-    *   `POST /orders`
+Like in the catalog service, threads are used. Further, the order service is threaded and uses synchronization 
+when writing to the order database file. 
 
-    In addition, the front-end service will provide a new REST API that allows clients to query
-    existing orders:
 
-    *   `GET /orders/<order_number>`
+### Client
 
-        This API returns a JSON reply with a top-level `data` object with the four fields: `number`,
-        `name`, `type`, and `quantity`. If the order number doesn't exist, a JSON reply with a
-        top-level `error` object should be returned. The `error` object should contain two fields:
-        `code` and `message`
+The client opens a HTTP connection with the front-end service and randomly looks up a stock. If the returned 
+quantity is greater than zero, with probability $p$ it will send another order request using the same 
+connection. $p$ is adjustable parameter in the range $[0, 1]$ to test application performance when the 
+percentage of order requests changes. A client can make a sequence of lookup and trade for each such lookup 
+based on probability $p$. The front-end server uses a single thread to handle all requests from the session 
+until the client closes the HTTP socket connection.
 
-    Since in this lab we will focus on higher level concepts, you can use a web framework like
-    [`Django`](https://github.com/django/django), [`Flask`](https://github.com/pallets/flask),
-    [`Spark`](https://github.com/perwendel/spark) to implement your front-end service. You can also
-    reuse the code you wrote in lab 2 if you prefer.
+The client first queries the front-end service with a random stock, then it will make a follow-up trade request 
+with probability `p` (make `p` an adjustable variable). You can decide whether the stock query request and the 
+trade request use the same connection. The client will repeat the aforementioned steps for a number of iterations, 
+and record the order number and order information if a trade request was successful. Before exiting, the client 
+will retrieve the order information of each order that was made using the order query request, and check whether 
+the server reply matches the locally stored order information.
 
-3.  Like in lab 2, you can decide the interfaces used between the microservices. Each microservice
-    still need to be able to handle requests concurrently. You can use any concurrency models
-    covered in class.
+### Caching
 
-4.  Add some variety to the stock offering by initializing your catalog with at least 10 different
-    stocks. Each stock should have an initial volume of 100.
+Redis is used as cache in the front-end service to reduce the latency of the stock lookup requests. The 
+front-end server starts with an empty in-memory cache. Upon receiving a stock query request, it first 
+checks the in-memory cache or forwards it to the catalog service, and then cache the returned result by 
+the catalog service.
 
-5.  The client first queries the front-end service with a random stock, then it will make a
-    follow-up trade request with probability `p` (make `p` an adjustable variable). You can
-    decide whether the stock query request and the trade request use the same connection. The
-    client will repeat the aforementioned steps for a number of iterations, and record the order
-    number and order information if a trade request was successful. Before exiting, the client will
-    retrieve the order information of each order that was made using the order query request, and
-    check whether the server reply matches the locally stored order information.
+Cache consistency is addressed whenever a stock is bought or sold using server-push technique: 
+the catalog server sends invalidation requests to the front-end server after each trade. 
+The invalidation requests cause the front-end service to remove the corresponding stock from the cache.
 
-## Part 1: Caching
+### Replication
 
-In this part we will add caching to the front-end service to reduce the latency of the stock query
-requests. The front-end server starts with an empty in-memory cache. Upon receiving a stock query
-request, it first checks the in-memory cache to see whether it can be served from the cache. If not,
-the request will then be forwarded to the catalog service, and the result returned by the catalog
-service will be stored in the cache.
+To ensure fault tolerance of order information due to crash failures, the order service is replicated. A simple 
+leader election algorithm was designed to ensure consistency. There is always 1 leader and the rest are
+followers. When the stock bazaar application is built, first the catalog service starts. Then three 
+replicas of the order service each with a unique id start and they have their own database files.
+The front-end service will always pick the node with the highest id as the leader.
 
-Cache consistency needs to be addressed whenever a stock is bought or sold. You should implement a
-server-push technique: the catalog server sends invalidation requests to the front-end server after each
-trade. The invalidation requests cause the front-end service to remove the corresponding stock from
-the cache.
+When the front-end service starts, it will read the id number and address of each replica of the 
+order service. It will ping the replica with the highest id number to see if it's responsive. 
+If so it will notify all the replicas that a leader with a specific id has been selected, otherwise 
+it will try the replica with the second-highest id. The process repeats until a leader has been found.
 
-## Part 2: Replication
+When a trade request or an order query request arrives, the front-end service only forwards the request to 
+the leader. In case of a successful trade, the leader node will propagate the information of the new order 
+to the follower nodes to maintain data consistency.
 
-To make sure that our stock bazaar doesn't lose any order information due to crash failures, we want
-to replicate the order service. When you start the stock bazaar application, you should first start
-the catalog service. Then you start three replicas of the order service, each with a unique id
-number and its own database file. There should always be 1 leader node and the rest are follower
-nodes. You do **NOT** need to implement a leader election algorithm. Instead the front-end service
-will always try to pick the node with the highest id number as the leader.
+### Fault Tolerance
 
-When the front-end service starts, it will read the id number and address of each replica of the
-order service (this can be done using configuration files/environment variables/command line
-parameters). It will ping (here ping means sending a health check request rather than the `ping`
-command) the replica with the highest id number to see if it's responsive. If so it will notify all
-the replicas that a leader has been selected with the id number, otherwise it will try the replica
-with the second highest id number. The process repeats until a leader has been found.
+Crash failure tolerance is ensured rather than Byzantine failure tolerance.
 
-When a trade request or an order query request arrives, the front-end service only forwards the
-request to the leader. In case of a successful trade (a new order number is generated), the leader
-node will propagate the information of the new order to the follower nodes to maintain data
-consistency.
+When any replica crashes (including the leader), trade requests and order query requests can still 
+be handled. To achieve this, if the front-end service finds that the leader node is unresponsive, it 
+will redo the leader selection algorithm as described in [Replication](#replication).
 
-## Part 3: Fault Tolerance
+When a crashed replica is back online, it synchronizes with the other replicas to retrieve the order 
+information that it has missed during the crash time. When a replica comes back online from a crash, it 
+will look at its database file and get the latest order number that it has and ask the other replicas what 
+orders it has missed since that order number.
 
-In this part you will handle failures of the order service. In this lab you only need to deal with
-crash failure tolerance rather than Byzantine failure tolerance.
+## Deployment
 
-First We want to make sure that when any replica crashes (including the leader), trade requests and
-order query requests can still be handled and return the correct result. To achieve this, when the
-front-end service finds that the leader node is unresponsive, it will redo the leader selection
-algorithm as described in [Part2](#part-2-replication).
+All components are containerized and deployed as a distributed application using Docker.
 
-We also want to make sure that when a crashed replica is back online, it can synchronize with the
-other replicas to retrieve the order information that it has missed during the offline time. When a
-replica comes back online from a crash, it will look at its database file and get the latest order
-number that it has and ask the other replicas what orders it has missed since that order number.
+## Instructions to run
 
-## Part 4: Testing and Evaluation with Deployment on AWS
+Install all the required libraries by running
+`pip3 install -r requirements.txt`
 
-First, write some simple test cases to verify that your code works as expected. You should test both
-each individual microservice as well as the whole application. Submit your test cases and test
-output in a test directory.
+### Run Locally
 
-Next, deploy your application on an `m5a.xlarge` instance in the `us-east-1` region on AWS. We will
-provide instructions on how to do this in lablet 5. Run 5 clients on your local machine. Measure
-the latency seen by each client for different types of requests. Change the probability p of a
-follow up trade request from 0 to 80%, with an increment of 20%, and record the result for each p
-setting. Make simple plots showing the values of p on the X-axis and the latency of different types
-of request on the y-axis. Also do the same experiments but with caching turned off, estimate how
-much benefits does caching provide by comparing the results.
+1. Create network - `docker network create lab`
+2. Start services - `docker-compose build && docker-compose up -d `
+3. USE `curl` or postman (see design document for sample requests) to interact with Front-end service.
+4. Stop application - `docker-compose down`
 
-Finally, simulate crash failures by killing a random order service replica while the client is
-running, and then bring it back online after some time. Repeat this experiment several times and
-make sure that you test the case when the leader is killed. Can the clients notice the failures?
-(either during order requests or the final order checking phase) or are they transparent to the
-clients? Do all the order service replicas end up with the same database file?
+### Performance Evaluation
 
-## What to submit
+1. Go to the frontend_service directory and execute the file performance.py to get average latency results 
+   for trade and lookup.
+2. If you want to execute multiple clients concurrently, run load_test.sh in the frontend_service directory. 
+   Currently, it runs for 5 clients concurrently, but it can be edited and run for as many clients as necessary.
 
-Your solution should contain source code for both parts separately inside the `src` directory. Then
-under the directory for each part, you should have a separate folder for each
-component/microservice, e.g., a `client` folder for client code, a `front-end` folder for the
-front-end service, etc.
+To execute the load_test.sh file, follow the below steps:
+`chmod u+x load_test.sh`
+`./load_test.sh`
 
-A short README file on how to run your code. Include build/make files if you created any, otherwise
-the README instructions on running the code should provide details on how to do so.
+### Run Test Cases
 
-Submit the following additional documents inside the docs directory. 1) A Brief design document (1
-to 2 pages) that explains your design choices (include citations, if you used Internet
-sources), 2) An Output file (1 to 2 pages), showing sample output or screenshots to indicate that your
-program works, and 3) An Evaluation doc (2 to 3 pages), for part 4 showing plots and making
-observations.
+To run test cases, go to app/tests and run the `pytest` command to generate the output of testcases. 
+Ensure all the servers are up and running for it.
 
-## Grading Rubric
+## Results - Testing and Evaluation with Deployment on AWS and Local
 
-Parts 1-3 accounts for 70% of the total lab grade:
+Deployed the application on an `m5a.xlarge` instance in the `us-east-1` region on AWS for testing.
 
-* Code should have inline comments (5%).
-* GitHub repo should have adequate commits and meaningful commit messages (5%).
-* Source code should build and work correctly (40%).
-* A descriptive design doc should be submitted (15%).
-* An output file should be included (5%).
+Run 5 clients on your local machine or AWS and measured the latency seen by each client for different types 
+of requests. Change the probability p of a follow-up trade request from 0 to 80%, with an increment of 20%, 
+and record the result for each p setting. The same experiments can be done with cache turned off to estimate 
+the benefits of cache.
 
-Part 4 accounts for 30% of the total lab grade:
+Finally, crash failures can be simulated by killing a random order service replica while the client is running, 
+and then bring it back online after some time. Repeat this experiment several times and try to test the case 
+when the leader is killed.
 
-* Should provide steps in your eval docs about how you deployed your application on AWS. Include
-  scripts in your repo if needed (5%).
-* An eval doc with measurement results and plots (15%).
-* Analysis of the results and answers to the questions in part 3 (10%).
+[Performance Testing Results] (Trading_App/docs/performance_testing_results.pdf)
+[Sample Outputs] (Trading_App/docs/output_snippets.pdf)
+
+### Contributors
+[Srujan] (https://github.com/srujan1997/)
+[Tejas] (https://github.com/tejasgnaik/)
 
 ## References
 
 1. Learn about Gaul (the region) https://en.wikipedia.org/wiki/Gaul and the Gauls (the people) https://en.wikipedia.org/wiki/Gauls
 2. Learn about the comics that these labs are based on https://en.wikipedia.org/wiki/Asterix
-3. Learn about Web framework such as Flask (python) https://flask.palletsprojects.com/en/2.2.x/  There are many python and java web frameworks - choose carefully if you decide to use one.
-4. Learn about model-view-controller (MVC) paradigm of writing web apps using frameworks https://en.wikipedia.org/wiki/Model–view–controller

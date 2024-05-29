@@ -38,4 +38,4 @@ def performance(p,num_req,hostname):
     print("Average trade latency: "+str(sum(trade_latency)/len(trade_latency)))
 
 if __name__ == '__main__':
-    performance(0.8,8,"ec2-52-91-58-144.compute-1.amazonaws.com") #Change hostname accordingly here. Setting the prob(p) to 1 to get equal lookuo and trade requests. It can be changed according to preference
+    performance(0.8,8,"0.0.0.0") #Change hostname accordingly here. Setting the prob(p) to 1 to get equal lookuo and trade requests. It can be changed according to preference
